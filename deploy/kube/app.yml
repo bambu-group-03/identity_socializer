@@ -1,0 +1,76 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: identity-socializer
+  name: identity-socializer-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: identity-socializer-app
+  template:
+    metadata:
+      labels:
+        app: identity-socializer-app
+    spec:
+      containers:
+      - name: app
+        image: identity_socializer:latest
+        readinessProbe:
+          httpGet:
+            path: /api/health
+            port: api-port
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        env:
+        - name: IDENTITY_SOCIALIZER_HOST
+          value: "0.0.0.0"
+        - name: IDENTITY_SOCIALIZER_WORKERS_COUNT
+          value: "10"
+        - name: IDENTITY_SOCIALIZER_DB_HOST
+          value: "identity-socializer-db-service"
+        resources:
+          limits:
+            memory: "200Mi"
+            cpu: "100m"
+        ports:
+        - containerPort: 8000
+          name: api-port
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: identity-socializer
+  name: identity-socializer-app-service
+spec:
+  selector:
+    app: identity-socializer-app
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: api-port
+    name: api-port
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: identity-socializer-app
+  namespace: identity-socializer
+  labels:
+    name: identity-socializer-app
+spec:
+  rules:
+  - host: identity-socializer.local
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: identity-socializer-app-service
+            port:
+              name: api-port
+
+---

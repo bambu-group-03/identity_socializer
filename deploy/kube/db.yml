@@ -1,0 +1,74 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: identity-socializer
+  name: identity-socializer-db
+spec:
+  selector:
+    matchLabels:
+      app: identity-socializer-db
+  template:
+    metadata:
+      labels:
+        app: identity-socializer-db
+    spec:
+      containers:
+      - name: database
+        image: postgres:13.8-bullseye
+        resources:
+          limits:
+            memory: "300Mi"
+            cpu: "200m"
+        env:
+        - name: POSTGRES_PASSWORD
+          value: "identity_socializer"
+        - name: POSTGRES_USER
+          value: "identity_socializer"
+        - name: POSTGRES_DB
+          value: "identity_socializer"
+        ports:
+        - containerPort: 5432
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: identity-socializer
+  name: "identity-socializer-db-service"
+spec:
+  selector:
+    app: identity-socializer-db
+  ports:
+  - port: 5432
+    targetPort: 5432
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  namespace: identity-socializer
+  name: identity-socializer-migrator
+spec:
+  ttlSecondsAfterFinished: 100
+  template:
+    spec:
+      containers:
+      - name: migrator
+        image: identity_socializer:latest
+        command:
+        - "alembic"
+        - "upgrade"
+        - "head"
+        resources:
+          limits:
+            memory: "200Mi"
+            cpu: "250m"
+        env:
+        - name: "IDENTITY_SOCIALIZER_DB_HOST"
+          value: "identity-socializer-db-service"
+      initContainers:
+      - name: wait-for-db
+        image: toschneck/wait-for-it:latest
+        command: ["./wait-for-it.sh", "-t", "60", "identity-socializer-db-service:5432"]
+      restartPolicy: Never
+
+---
