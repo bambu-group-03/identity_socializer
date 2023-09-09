@@ -20,6 +20,30 @@ You can find swagger documentation at `/api/docs`.
 
 You can read more about poetry here: https://python-poetry.org/
 
+## Configuration
+
+This application can be configured with environment variables.
+
+```bash
+cp .env_template .env
+```
+
+All environment variables should start with "IDENTITY_SOCIALIZER_" prefix.
+
+For example if you see in your "identity_socializer/settings.py" a variable named like
+`random_parameter`, you should provide the "IDENTITY_SOCIALIZER_RANDOM_PARAMETER"
+variable to configure the value. This behaviour can be changed by overriding `env_prefix` property
+in `identity_socializer.settings.Settings.Config`.
+
+An example of .env file:
+```bash
+IDENTITY_SOCIALIZER_RELOAD="True"
+IDENTITY_SOCIALIZER_PORT="8000"
+IDENTITY_SOCIALIZER_ENVIRONMENT="dev"
+```
+
+You can read more about BaseSettings class here: https://pydantic-docs.helpmanual.io/usage/settings/
+
 ## Docker
 
 You can start the project with docker using this command:
@@ -63,29 +87,6 @@ identity_socializer
     ├── application.py  # FastAPI application configuration.
     └── lifetime.py  # Contains actions to perform on startup and shutdown.
 ```
-
-## Configuration
-
-This application can be configured with environment variables.
-
-You can create `.env` file in the root directory and place all
-environment variables here.
-
-All environment variables should start with "IDENTITY_SOCIALIZER_" prefix.
-
-For example if you see in your "identity_socializer/settings.py" a variable named like
-`random_parameter`, you should provide the "IDENTITY_SOCIALIZER_RANDOM_PARAMETER"
-variable to configure the value. This behaviour can be changed by overriding `env_prefix` property
-in `identity_socializer.settings.Settings.Config`.
-
-An example of .env file:
-```bash
-IDENTITY_SOCIALIZER_RELOAD="True"
-IDENTITY_SOCIALIZER_PORT="8000"
-IDENTITY_SOCIALIZER_ENVIRONMENT="dev"
-```
-
-You can read more about BaseSettings class here: https://pydantic-docs.helpmanual.io/usage/settings/
 
 ## Pre-commit
 
