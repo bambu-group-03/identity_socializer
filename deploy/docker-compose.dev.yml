@@ -14,7 +14,8 @@ services:
       # Enables autoreload.
       IDENTITY_SOCIALIZER_RELOAD: "True"
   db:
-    image: postgres:13.3
     ports:
       # Exposes database port.
     - "5432:5432"
+    build:
+      target: dev
