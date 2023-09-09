@@ -17,5 +17,3 @@ services:
     ports:
       # Exposes database port.
     - "5432:5432"
-    build:
-      target: dev
