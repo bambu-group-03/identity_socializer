@@ -1,17 +1,17 @@
 from fastapi import APIRouter
 router = APIRouter()
-from identity_socializer.web.api.auth.schema import Signup
-from identity_socializer.web.api.auth.schema import SecurityToken
+from identity_socializer.web.api.auth.schema import SecurityToken, Success
 
-from schema import Success
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import auth
+
 
 @router.post("/signup", response_model=Success) 
 async def signup(
     incoming_message: SecurityToken,
 ) -> SecurityToken:
-  import firebase_admin
-  from firebase_admin import credentials
-  from firebase_admin import auth
+  
   cred = credentials.Certificate("identity_socializer/firebase_credentials.json")
   firebase_admin.initialize_app(cred)
 
