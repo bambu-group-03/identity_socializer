@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 router = APIRouter()
 from identity_socializer.web.api.auth.schema import SecurityToken, Success
 
@@ -13,12 +13,11 @@ async def signup(
     incoming_message: SecurityToken,
 ) -> Success:
   ret = Success(msg="Success")
+
+  # todo: explorar cada caso de verify_id_token
   try:
     res = auth.verify_id_token(incoming_message.token)
-    print(res)
-  except auth.InvalidIdTokenError:
-    ret = Success(msg="InvalidIdTokenError")
-  # todo: explorar cada caso de verify_id_token
-  except Exception:
-    ret = Success(msg="Server Error")
-  return ret
+    return ret
+  except Exception as e:
+    raise HTTPException(status_code=500, detail=str(e))
+  
