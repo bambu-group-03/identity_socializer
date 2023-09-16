@@ -18,4 +18,7 @@ async def signup(
     print(res)
   except auth.InvalidIdTokenError:
     ret = Success(msg="InvalidIdTokenError")
+  # todo: explorar cada caso de verify_id_token
+  except Exception:
+    ret = Success(msg="Server Error")
   return ret
