@@ -7,10 +7,8 @@ class SecurityToken(BaseModel):
     token: str
 
 
-class Signup(BaseModel):
+class Success(BaseModel):
     """
-    Username, email and password for registration
+    Yay.
     """
-    username: str
-    email: str
-    password: str
+    msg: str
