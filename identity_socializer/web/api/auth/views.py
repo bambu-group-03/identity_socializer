@@ -5,19 +5,17 @@ from identity_socializer.web.api.auth.schema import SecurityToken, Success
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import auth
-
+CRED = credentials.Certificate("identity_socializer/firebase_credentials.json")
+firebase_admin.initialize_app(CRED)
 
 @router.post("/signup", response_model=Success) 
 async def signup(
     incoming_message: SecurityToken,
-) -> SecurityToken:
-  
-  cred = credentials.Certificate("identity_socializer/firebase_credentials.json")
-  firebase_admin.initialize_app(cred)
-
-  user = auth.getUser(incoming_message.token)
-  print('Successfully fetched user data: {0}'.format(user.uid))
-
-  custom_token = auth.create_custom_token(user.uid)
-  ret = Success("todo fino")
+) -> Success:
+  ret = Success(msg="todo fino")
+  try:
+    res = auth.verify_id_token(incoming_message.token)
+    print(res)
+  except:
+    ret = Success(msg="fracaso total")
   return ret
