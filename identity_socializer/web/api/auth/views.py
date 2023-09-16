@@ -12,10 +12,10 @@ firebase_admin.initialize_app(CRED)
 async def signup(
     incoming_message: SecurityToken,
 ) -> Success:
-  ret = Success(msg="todo fino")
+  ret = Success(msg="Success")
   try:
     res = auth.verify_id_token(incoming_message.token)
     print(res)
-  except:
-    ret = Success(msg="fracaso total")
+  except auth.InvalidIdTokenError:
+    ret = Success(msg="InvalidIdTokenError")
   return ret
