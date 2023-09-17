@@ -1,0 +1,57 @@
+version: '3.9'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: ./deploy/Dockerfile
+      target: prod
+    image: identity_socializer:${IDENTITY_SOCIALIZER_VERSION:-latest}
+    restart: always
+    env_file:
+    - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      # Exposes application port.
+    - "8000:8000"
+    environment:
+      IDENTITY_SOCIALIZER_HOST: 0.0.0.0
+      IDENTITY_SOCIALIZER_DB_HOST: db
+      IDENTITY_SOCIALIZER_DB_PORT: 5432
+      IDENTITY_SOCIALIZER_DB_USER: identity_socializer
+      IDENTITY_SOCIALIZER_DB_PASS: identity_socializer
+      IDENTITY_SOCIALIZER_DB_BASE: identity_socializer
+
+  db:
+    image: postgres:13.8-bullseye
+    environment:
+      POSTGRES_PASSWORD: "identity_socializer"
+      POSTGRES_USER: "identity_socializer"
+      POSTGRES_DB: "identity_socializer"
+    volumes:
+    - identity_socializer-db-data:/var/lib/postgresql/data
+    restart: always
+    healthcheck:
+      test: pg_isready -U identity_socializer
+      interval: 2s
+      timeout: 3s
+      retries: 40
+
+  migrator:
+    image: ${OKTETO_BUILD_API_IMAGE}
+    restart: "no"
+    command: alembic upgrade head
+    environment:
+      IDENTITY_SOCIALIZER_DB_HOST: db
+      IDENTITY_SOCIALIZER_DB_PORT: 5432
+      IDENTITY_SOCIALIZER_DB_USER: identity_socializer
+      IDENTITY_SOCIALIZER_DB_PASS: identity_socializer
+      IDENTITY_SOCIALIZER_DB_BASE: identity_socializer
+    depends_on:
+      db:
+        condition: service_healthy
+volumes:
+  identity_socializer-db-data:
+    name: identity_socializer-db-data

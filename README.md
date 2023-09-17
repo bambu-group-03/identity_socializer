@@ -119,7 +119,7 @@ It will create needed components.
 If you haven't pushed to docker registry yet, you can build image locally.
 
 ```bash
-docker-compose -f deploy/docker-compose.yml --project-directory . build
+docker compose -f deploy/docker-compose.yml --project-directory . build
 docker save --output identity_socializer.tar identity_socializer:latest
 ```
 
@@ -162,8 +162,8 @@ alembic revision
 If you want to run it in docker, simply run:
 
 ```bash
-docker-compose -f deploy/docker-compose.yml -f deploy/docker-compose.dev.yml --project-directory . run --build --rm api pytest -vv .
-docker-compose -f deploy/docker-compose.yml -f deploy/docker-compose.dev.yml --project-directory . down
+docker compose -f deploy/docker-compose.yml -f deploy/docker-compose.dev.yml --project-directory . run --build --rm api pytest -vv .
+docker compose -f deploy/docker-compose.yml -f deploy/docker-compose.dev.yml --project-directory . down
 ```
 
 For running tests on your local machine.

@@ -48,7 +48,6 @@ jobs:
   pytest:
     runs-on: ubuntu-latest
     services:
-
       identity_socializer-db:
         image: postgres:13.8-bullseye
         env:
@@ -77,3 +76,16 @@ jobs:
       env:
         IDENTITY_SOCIALIZER_HOST: "0.0.0.0"
         IDENTITY_SOCIALIZER_DB_HOST: localhost
+  devflow:
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout
+      uses: actions/checkout@master
+    - uses: okteto/context@latest
+      with:
+        token: ${{ secrets.OKTETO_TOKEN }}
+    - name: "Create deployment"
+      uses: luiscusihuaman/okteto-deploy@main
+      with:
+        file: okteto.yml
+        build: "true"
