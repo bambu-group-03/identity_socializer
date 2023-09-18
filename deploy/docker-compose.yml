@@ -10,16 +10,8 @@ services:
     restart: always
     env_file:
     - .env
-    labels:
-      # Enables traefik for this container.
-    - traefik.enable=true
-    - traefik.http.routers.identity_socializer.rule=Host(`${IDENTITY_SOCIALIZER_TRAEFIK_HOST:-identity_socializer.localhost}`)
-    - traefik.http.routers.identity_socializer.entrypoints=http
-    - traefik.http.routers.identity_socializer.service=identity_socializer
-    - traefik.http.services.identity_socializer.loadbalancer.server.port=${IDENTITY_SOCIALIZER_PORT:-8000}
     networks:
-    - default
-    - traefik-shared
+      - microservices 
     depends_on:
       db:
         condition: service_healthy
@@ -68,6 +60,5 @@ volumes:
     name: identity_socializer-db-data
 
 networks:
-  # Network for traefik.
-  traefik-shared:
-    name: traefik-shared
+  microservices:
+    external: true

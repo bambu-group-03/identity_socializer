@@ -28,6 +28,12 @@ This application can be configured with environment variables.
 cp .env_template .env
 ```
 
+CREATE NETWORK BTW MICROSERVICES
+
+```bash
+docker network create -d bridge microservices 
+```
+
 All environment variables should start with "IDENTITY_SOCIALIZER_" prefix.
 
 For example if you see in your "identity_socializer/settings.py" a variable named like
