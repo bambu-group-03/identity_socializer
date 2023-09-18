@@ -48,9 +48,7 @@ async def create_dummy_model(
 def create_tweet(
     incoming_message: Message,
 ) -> Message:
-    """
-    Creates dummy tweet in content_discovery service by http.
-    """
+    """Creates dummy tweet in content_discovery service by http."""
     print(f"{settings.content_discovery_url}/api/echo/")
     response = httpx.post(
         f"{settings.content_discovery_url}/api/echo/",
