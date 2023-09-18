@@ -31,7 +31,7 @@ cp .env_template .env
 CREATE NETWORK BTW MICROSERVICES
 
 ```bash
-docker network create -d bridge microservices 
+docker network create -d bridge microservices
 ```
 
 All environment variables should start with "IDENTITY_SOCIALIZER_" prefix.

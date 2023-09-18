@@ -1,8 +1,8 @@
 from typing import List
 
+import httpx
 from fastapi import APIRouter
 from fastapi.param_functions import Depends
-import httpx
 
 from identity_socializer.db.dao.dummy_dao import DummyDAO
 from identity_socializer.db.models.dummy_model import DummyModel
@@ -57,4 +57,4 @@ def create_tweet(
         json={"message": incoming_message.message},
     )
     print(response.status_code)
-    return incoming_message 
+    return incoming_message
