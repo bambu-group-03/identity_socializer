@@ -51,6 +51,7 @@ def create_tweet(
     """
     Creates dummy tweet in content_discovery service by http.
     """
+    print(f"{settings.content_discovery_url}/api/echo/")
     response = httpx.post(
         f"{settings.content_discovery_url}/api/echo/",
         json={"message": incoming_message.message},
