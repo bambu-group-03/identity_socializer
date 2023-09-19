@@ -1,0 +1,26 @@
+#  .github/workflows/YOUR-WORKFLOW.yml
+
+name: comment_pr_with_linter_error
+
+on:
+    pull_request:
+      branches: [main, master]
+
+jobs:
+  flake8-lint:
+    permissions:
+        contents: read
+      pull-requests: write
+    runs-on: ubuntu-latest
+    name: Linter
+    steps:
+      - name: Check out source repository
+        uses: actions/checkout@v3
+      - name: Set up Python environment
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Run linter and comment PR
+        uses: matias-martini/flake8-pr-comments-action@main
+        with:
+          github_token: ${{ github.token }}

@@ -1,6 +1,6 @@
 from fastapi.routing import APIRouter
 
-from identity_socializer.web.api import docs, dummy, echo, monitoring, auth
+from identity_socializer.web.api import auth, docs, dummy, echo, monitoring
 
 api_router = APIRouter()
 api_router.include_router(monitoring.router)
