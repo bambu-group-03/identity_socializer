@@ -23,7 +23,10 @@ jobs:
       uses: knowsuchagency/poetry-install@v1
       env:
         POETRY_VIRTUALENVS_CREATE: false
-    - name: flake8 Lint PR
-      uses: reviewdog/action-flake8@v3
-      with:
-        github_token: ${{ github.token }}
+    - name: 📦 Install Reviewdog
+      uses: reviewdog/action-setup@v1
+    - name: 🏃‍♂️ Run FLAKE8 LINTER PR
+      run: |
+        poetry run flake8| reviewdog -f=flake8 -name="flake8" -efm="%f:%l:%c: %m" -reporter="github-pr-review" -filter-mode="nofilter" -fail-on-error -tee
+      env:
+        REVIEWDOG_GITHUB_API_TOKEN: ${{ github.token }}
