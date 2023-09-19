@@ -23,7 +23,7 @@ jobs:
       uses: knowsuchagency/poetry-install@v1
       env:
         POETRY_VIRTUALENVS_CREATE: false
-    - name: Run linter and comment PR
-      uses: matias-martini/flake8-pr-comments-action@main
+    - name: flake8 Lint PR
+      uses: reviewdog/action-flake8@v3
       with:
         github_token: ${{ github.token }}
