@@ -1,14 +1,14 @@
-import firebase_admin
 import pytest
 from fastapi import FastAPI
-from firebase_admin import credentials
+from firebase_admin import credentials, initialize_app
 from httpx import AsyncClient
 
 
 @pytest.mark.anyio
 async def test_successfully_signup(client: AsyncClient, fastapi_app: FastAPI) -> None:
+    """Test successfully signup."""
     cred = credentials.Certificate("firebase_credentials.json")
-    firebase_admin.initialize_app(cred)
+    initialize_app(cred)
 
 
 # Client creates user and returns token from firebase admin
@@ -23,6 +23,7 @@ async def test_successfully_signup(client: AsyncClient, fastapi_app: FastAPI) ->
 # server verifies user in
 
 
-@pytest.mark.anyio
-async def test_successfully_signin(client: AsyncClient) -> None:
-    pass
+# TODO fix this test
+# @pytest.mark.anyio
+# async def test_successfully_signin(client: AsyncClient) -> None:
+#     pass

@@ -2,16 +2,12 @@ from pydantic import BaseModel
 
 
 class SecurityToken(BaseModel):
-    """
-    Firebase-generated token.
-    """
+    """Firebase-generated token."""
 
     token: str
 
 
 class Success(BaseModel):
-    """
-    Yay.
-    """
+    """Success message."""
 
     msg: str
