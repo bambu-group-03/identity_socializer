@@ -5,7 +5,7 @@ from identity_socializer.web.api.auth.schema import SecurityToken, Success
 
 router = APIRouter()
 
-CRED = credentials.Certificate("identity_socializer/firebase_credentials.json")
+CRED = credentials.Certificate("firebase_credentials.json")
 initialize_app(CRED)
 
 
