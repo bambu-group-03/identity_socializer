@@ -33,6 +33,8 @@ services:
     volumes:
     - identity_socializer-db-data:/var/lib/postgresql/data
     restart: always
+    networks:
+    - microservices
     healthcheck:
       test: pg_isready -U identity_socializer
       interval: 2s
@@ -49,6 +51,8 @@ services:
       IDENTITY_SOCIALIZER_DB_USER: identity_socializer
       IDENTITY_SOCIALIZER_DB_PASS: identity_socializer
       IDENTITY_SOCIALIZER_DB_BASE: identity_socializer
+    networks:
+    - microservices
     depends_on:
       db:
         condition: service_healthy
