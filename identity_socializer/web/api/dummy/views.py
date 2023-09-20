@@ -1,11 +1,14 @@
 from typing import List
 
+import httpx
 from fastapi import APIRouter
 from fastapi.param_functions import Depends
 
 from identity_socializer.db.dao.dummy_dao import DummyDAO
 from identity_socializer.db.models.dummy_model import DummyModel
+from identity_socializer.settings import settings
 from identity_socializer.web.api.dummy.schema import DummyModelDTO, DummyModelInputDTO
+from identity_socializer.web.api.echo.schema import Message
 
 router = APIRouter()
 
@@ -39,3 +42,17 @@ async def create_dummy_model(
     :param dummy_dao: DAO for dummy models.
     """
     await dummy_dao.create_dummy_model(name=new_dummy_object.name)
+
+
+@router.post("/tweets/tweet", response_model=Message)
+def create_tweet(
+    incoming_message: Message,
+) -> Message:
+    """Creates dummy tweet in content_discovery service by http."""
+    print(f"{settings.content_discovery_url}/api/echo/")
+    response = httpx.post(
+        f"{settings.content_discovery_url}/api/echo/",
+        json={"message": incoming_message.message},
+    )
+    print(response.status_code)
+    return incoming_message

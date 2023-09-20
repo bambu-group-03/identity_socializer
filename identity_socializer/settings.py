@@ -67,6 +67,7 @@ class Settings(BaseSettings):
             path=f"/{self.db_base}",
         )
 
+    content_discovery_url: str = "http://localhost:9876"
     model_config = SettingsConfigDict(
         env_file=".env",
         env_prefix="IDENTITY_SOCIALIZER_",
