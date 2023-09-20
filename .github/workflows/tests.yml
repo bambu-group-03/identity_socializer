@@ -71,6 +71,11 @@ jobs:
       uses: knowsuchagency/poetry-install@v1
       env:
         POETRY_VIRTUALENVS_CREATE: false
+    - name: Firebase credentials for testing
+      run: echo "$FIREBASE_CREDENTIALS" > firebase_credentials.json
+      shell: bash
+      env:
+        FIREBASE_CREDENTIALS: ${{secrets.FIREBASE_CREDENTIALS}}
     - name: Run pytest check
       run: poetry run pytest -vv --cov="identity_socializer" .
       env:

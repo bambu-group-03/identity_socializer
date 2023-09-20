@@ -2,6 +2,7 @@ import os
 import shutil
 
 import uvicorn
+from firebase_admin import credentials, initialize_app
 
 from identity_socializer.settings import settings
 
@@ -43,6 +44,8 @@ def main() -> None:
         log_level=settings.log_level.value.lower(),
         factory=True,
     )
+    firebase_cred = credentials.Certificate("firebase_credentials.json")
+    initialize_app(firebase_cred)
 
 
 if __name__ == "__main__":
