@@ -48,7 +48,6 @@ jobs:
   pytest:
     runs-on: ubuntu-latest
     services:
-
       identity_socializer-db:
         image: postgres:13.8-bullseye
         env:
@@ -72,6 +71,7 @@ jobs:
       uses: knowsuchagency/poetry-install@v1
       env:
         POETRY_VIRTUALENVS_CREATE: false
+    - run: echo ${{secrets.FIREBASE_CREDENTIALS}} > firebase_credentials.json
     - name: Run pytest check
       run: poetry run pytest -vv --cov="identity_socializer" .
       env:
