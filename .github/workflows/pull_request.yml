@@ -1,0 +1,32 @@
+#  .github/workflows/YOUR-WORKFLOW.yml
+
+name: comment_pr_with_linter_error
+
+on:
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  flake8-lint:
+    permissions:
+      contents: read
+      pull-requests: write
+    runs-on: ubuntu-latest
+    name: Linter
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+    - name: Install deps
+      uses: knowsuchagency/poetry-install@v1
+      env:
+        POETRY_VIRTUALENVS_CREATE: false
+    - name: 📦 Install Reviewdog
+      uses: reviewdog/action-setup@v1
+    - name: 🏃‍♂️ Run FLAKE8 LINTER PR
+      run: |
+        poetry run flake8| reviewdog -name="flake8" -efm="%f:%l:%c: %m" -reporter="github-pr-review" -filter-mode="nofilter" -fail-on-error -tee
+      env:
+        REVIEWDOG_GITHUB_API_TOKEN: ${{ github.token }}

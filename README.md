@@ -28,7 +28,7 @@ This application can be configured with environment variables.
 cp .env_template .env
 ```
 
-All environment variables should start with "IDENTITY_SOCIALIZER_" prefix.
+All environment variables should start with "IDENTITY*SOCIALIZER*" prefix.
 
 For example if you see in your "identity_socializer/settings.py" a variable named like
 `random_parameter`, you should provide the "IDENTITY_SOCIALIZER_RANDOM_PARAMETER"
@@ -36,6 +36,7 @@ variable to configure the value. This behaviour can be changed by overriding `en
 in `identity_socializer.settings.Settings.Config`.
 
 An example of .env file:
+
 ```bash
 IDENTITY_SOCIALIZER_RELOAD="True"
 IDENTITY_SOCIALIZER_PORT="8000"
@@ -91,6 +92,7 @@ identity_socializer
 ## Pre-commit
 
 To install pre-commit simply run inside the shell:
+
 ```bash
 pre-commit install
 ```
@@ -99,17 +101,19 @@ pre-commit is very useful to check your code before publishing it.
 It's configured using .pre-commit-config.yaml file.
 
 By default it runs:
-* black (formats your code);
-* mypy (validates types);
-* isort (sorts imports in all files);
-* flake8 (spots possible bugs);
 
+-   black (formats your code);
+-   mypy (validates types);
+-   isort (sorts imports in all files);
+-   flake8 (spots possible bugs);
 
 You can read more about pre-commit here: https://pre-commit.com/
 
 ## Kubernetes
+
 To run your app in kubernetes
 just run:
+
 ```bash
 kubectl apply -f deploy/kube
 ```
@@ -126,6 +130,7 @@ docker save --output identity_socializer.tar identity_socializer:latest
 ## Migrations
 
 If you want to migrate your database, you should run following commands:
+
 ```bash
 # To run all migrations until the migration with revision_id.
 alembic upgrade "<revision_id>"
@@ -137,6 +142,7 @@ alembic upgrade "head"
 ### Reverting migrations
 
 If you want to revert migrations, you should run:
+
 ```bash
 # revert all migrations up to: revision_id.
 alembic downgrade <revision_id>
@@ -148,6 +154,7 @@ alembic downgrade <revision_id>
 ### Migration generation
 
 To generate migrations you should run:
+
 ```bash
 # For automatic change detection.
 alembic revision --autogenerate
@@ -156,26 +163,26 @@ alembic revision --autogenerate
 alembic revision
 ```
 
-
 ## Running tests
 
 If you want to run it in docker, simply run:
 
 ```bash
 docker compose -f deploy/docker-compose.yml -f deploy/docker-compose.dev.yml --project-directory . run --build --rm api pytest -vv .
-docker compose -f deploy/docker-compose.yml -f deploy/docker-compose.dev.yml --project-directory . down
 ```
 
 For running tests on your local machine.
+
 1. you need to start a database.
 
 I prefer doing it with docker:
+
 ```
 docker run -p "5432:5432" -e "POSTGRES_PASSWORD=identity_socializer" -e "POSTGRES_USER=identity_socializer" -e "POSTGRES_DB=identity_socializer" postgres:13.8-bullseye
 ```
 
-
 2. Run the pytest.
+
 ```bash
 pytest -vv .
 ```

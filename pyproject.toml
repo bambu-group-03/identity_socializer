@@ -25,6 +25,7 @@ aiofiles = "^23.1.0"
 httptools = "^0.6.0"
 prometheus-client = "^0.17.0"
 prometheus-fastapi-instrumentator = "6.0.0"
+firebase-admin = "^6.2.0"
 
 
 [tool.poetry.dev-dependencies]
