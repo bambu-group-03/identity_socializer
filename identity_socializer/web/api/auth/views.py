@@ -1,12 +1,9 @@
 from fastapi import APIRouter, HTTPException
-from firebase_admin import auth, credentials, initialize_app
+from firebase_admin import auth
 
 from identity_socializer.web.api.auth.schema import SecurityToken, Success
 
 router = APIRouter()
-
-CRED = credentials.Certificate("firebase_credentials.json")
-initialize_app(CRED)
 
 
 @router.post("/signup", response_model=Success)
