@@ -64,7 +64,4 @@ async def get_user_models(
     :param user_dao: DAO for users models.
     :return: list of users objects from database.
     """
-    coso = await user_dao.get_all_users(limit=limit, offset=offset)
-    print(f"EL COSO DIO {coso}")
-
     return await user_dao.get_all_users(limit=limit, offset=offset)
