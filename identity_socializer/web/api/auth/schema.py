@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class SecurityToken(BaseModel):
@@ -11,3 +11,12 @@ class Success(BaseModel):
     """Success message."""
 
     msg: str
+
+
+class UserModelDTO(BaseModel):
+    """Message model for user register."""
+
+    id: str
+    email: str
+    name: str
+    model_config = ConfigDict(from_attributes=True)
