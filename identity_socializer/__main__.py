@@ -27,6 +27,7 @@ def set_multiproc_dir() -> None:
     os.environ["prometheus_multiproc_dir"] = str(
         settings.prometheus_dir.expanduser().absolute(),
     )
+    
     os.environ["PROMETHEUS_MULTIPROC_DIR"] = str(
         settings.prometheus_dir.expanduser().absolute(),
     )
