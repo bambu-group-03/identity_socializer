@@ -45,7 +45,10 @@ async def register(
     """
     await user_dao.create_user_model(
         uid=incoming_message.id,
-        name=incoming_message.name,
+        first_name=incoming_message.first_name,
+        last_name=incoming_message.last_name,
+        phone_number=incoming_message.phone_number,
+        bio_msg=incoming_message.bio_msg,
         email=incoming_message.email,
     )
 

@@ -18,5 +18,8 @@ class UserModelDTO(BaseModel):
 
     id: str
     email: str
-    name: str
+    first_name: str
+    last_name: str
+    phone_number: str
+    bio_msg: str
     model_config = ConfigDict(from_attributes=True)

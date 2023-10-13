@@ -14,13 +14,31 @@ class UserDAO:
     def __init__(self, session: AsyncSession = Depends(get_db_session)):
         self.session = session
 
-    async def create_user_model(self, uid: str, name: str, email: str) -> None:
+    async def create_user_model(
+        self,
+        uid: str,
+        email: str,
+        first_name: str,
+        last_name: str,
+        phone_number: str,
+        bio_msg: str,
+    ) -> None:
+
         """
         Add single user to session.
 
         :param name: name of a user.
         """
-        self.session.add(UserModel(name=name, id=uid, email=email))
+        user_model = UserModel(
+            first_name=first_name,
+            last_name=last_name,
+            phone_number=phone_number,
+            bio_msg=bio_msg,
+            id=uid,
+            email=email,
+        )
+
+        self.session.add(user_model)
 
     async def get_all_users(self, limit: int, offset: int) -> List[UserModel]:
         """
@@ -38,7 +56,7 @@ class UserDAO:
 
     async def filter(
         self,
-        name: Optional[str] = None,
+        first_name: Optional[str] = None,
     ) -> List[UserModel]:
         """
         Get specific user model.
@@ -47,7 +65,7 @@ class UserDAO:
         :return: users models.
         """
         query = select(UserModel)
-        if name:
-            query = query.where(UserModel.name == name)
+        if first_name:
+            query = query.where(UserModel.first_name == first_name)
         rows = await self.session.execute(query)
         return list(rows.scalars().fetchall())
