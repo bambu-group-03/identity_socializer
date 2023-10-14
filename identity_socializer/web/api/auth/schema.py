@@ -23,3 +23,12 @@ class UserModelDTO(BaseModel):
     phone_number: str
     bio_msg: str
     model_config = ConfigDict(from_attributes=True)
+
+
+class SimpleUserModelDTO(BaseModel):
+    """Message model for user register."""
+
+    id: str
+    name: str
+    email: str
+    model_config = ConfigDict(from_attributes=True)
