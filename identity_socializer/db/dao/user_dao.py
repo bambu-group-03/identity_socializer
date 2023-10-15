@@ -65,6 +65,22 @@ class UserDAO:
 
         await self.session.execute(stmt)
 
+    async def delete_user_model(
+        self,
+        uid: str,
+    ) -> None:
+
+        """Soft delete a single user to session."""
+        stmt = (
+            update(UserModel)
+            .where(UserModel.id == uid)
+            .values(
+                blocked=True,
+            )
+        )
+
+        await self.session.execute(stmt)
+
     async def get_all_users(self, limit: int, offset: int) -> List[UserModel]:
         """
         Get all users models with limit/offset pagination.

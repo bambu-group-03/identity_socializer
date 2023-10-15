@@ -26,6 +26,7 @@ def upgrade() -> None:
         sa.Column("email", sa.String(length=50), nullable=False),
         sa.Column("bio_msg", sa.String(length=200), nullable=True),
         sa.Column("profile_photo_id", sa.String(length=200), nullable=True),
+        sa.Column("blocked", sa.Boolean(), nullable=False, default=False),
         sa.PrimaryKeyConstraint("id"),
     )
     # ### end Alembic commands ###

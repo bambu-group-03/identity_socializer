@@ -25,6 +25,7 @@ class UserModelDTO(BaseModel):
     phone_number: Optional[str]
     bio_msg: Optional[str]
     profile_photo_id: Optional[str]
+    blocked: bool
     model_config = ConfigDict(from_attributes=True)
 
 
@@ -34,4 +35,11 @@ class SimpleUserModelDTO(BaseModel):
     id: str
     name: str
     email: str
+    model_config = ConfigDict(from_attributes=True)
+
+
+class IdUserModel(BaseModel):
+    """Message model for requests with user id."""
+
+    id: str
     model_config = ConfigDict(from_attributes=True)
