@@ -24,6 +24,7 @@ class UserModelDTO(BaseModel):
     last_name: Optional[str]
     phone_number: Optional[str]
     bio_msg: Optional[str]
+    profile_photo_id: Optional[str]
     model_config = ConfigDict(from_attributes=True)
 
 
