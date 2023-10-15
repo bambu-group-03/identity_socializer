@@ -46,10 +46,6 @@ async def register(
     await user_dao.create_user_model(
         uid=simple_user.id,
         email=simple_user.email,
-        first_name=None,
-        last_name=None,
-        phone_number=None,
-        bio_msg=None,
     )
 
 

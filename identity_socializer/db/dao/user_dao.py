@@ -18,16 +18,16 @@ class UserDAO:
         self,
         uid: str,
         email: str,
-        first_name: str,
-        last_name: str,
-        phone_number: str,
-        bio_msg: str,
+        first_name: str | None = None,
+        last_name: str | None = None,
+        phone_number: str | None = None,
+        bio_msg: str | None = None,
     ) -> None:
 
         """
         Add single user to session.
 
-        :param name: name of a user.
+        It could contain only id and email.
         """
         user_model = UserModel(
             first_name=first_name,
