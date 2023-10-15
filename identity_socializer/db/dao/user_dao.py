@@ -18,10 +18,10 @@ class UserDAO:
         self,
         uid: str,
         email: str,
-        first_name: str | None = None,
-        last_name: str | None = None,
-        phone_number: str | None = None,
-        bio_msg: str | None = None,
+        first_name: (str | None) = None,
+        last_name: (str | None) = None,
+        phone_number: (str | None) = None,
+        bio_msg: (str | None) = None,
     ) -> None:
 
         """
