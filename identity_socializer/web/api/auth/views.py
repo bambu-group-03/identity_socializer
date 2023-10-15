@@ -5,7 +5,12 @@ from firebase_admin import auth
 
 from identity_socializer.db.dao.user_dao import UserDAO
 from identity_socializer.db.models.user_model import UserModel
-from identity_socializer.web.api.auth.schema import SecurityToken, Success, UserModelDTO
+from identity_socializer.web.api.auth.schema import (
+    SecurityToken,
+    SimpleUserModelDTO,
+    Success,
+    UserModelDTO,
+)
 
 router = APIRouter()
 
@@ -34,22 +39,13 @@ async def signup(
 
 @router.post("/register", response_model=None)
 async def register(
-    incoming_message: UserModelDTO,
+    simple_user: SimpleUserModelDTO,
     user_dao: UserDAO = Depends(),
 ) -> None:
-    """
-    Register a user.
-
-    :param incoming_message: Incoming message.
-    :param user_dao: DAO for users models.
-    """
+    """Register a user with minimal information."""
     await user_dao.create_user_model(
-        uid=incoming_message.id,
-        first_name=incoming_message.first_name,
-        last_name=incoming_message.last_name,
-        phone_number=incoming_message.phone_number,
-        bio_msg=incoming_message.bio_msg,
-        email=incoming_message.email,
+        uid=simple_user.id,
+        email=simple_user.email,
     )
 
 

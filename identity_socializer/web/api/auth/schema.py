@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import BaseModel, ConfigDict
 
 
@@ -18,8 +20,17 @@ class UserModelDTO(BaseModel):
 
     id: str
     email: str
-    first_name: str
-    last_name: str
-    phone_number: str
-    bio_msg: str
+    first_name: Optional[str]
+    last_name: Optional[str]
+    phone_number: Optional[str]
+    bio_msg: Optional[str]
+    model_config = ConfigDict(from_attributes=True)
+
+
+class SimpleUserModelDTO(BaseModel):
+    """Message model for user register."""
+
+    id: str
+    name: str
+    email: str
     model_config = ConfigDict(from_attributes=True)
