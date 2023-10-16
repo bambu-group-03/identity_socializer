@@ -1,9 +1,11 @@
-from typing import List
+from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException
 from firebase_admin import auth
 
+from identity_socializer.db.dao.relationship_dao import RelationshipDAO
 from identity_socializer.db.dao.user_dao import UserDAO
+from identity_socializer.db.models.relationship_model import RelationshipModel
 from identity_socializer.db.models.user_model import UserModel
 from identity_socializer.web.api.auth.schema import (
     SecurityToken,
@@ -64,3 +66,40 @@ async def get_user_models(
     :return: list of users objects from database.
     """
     return await user_dao.get_all_users(limit=limit, offset=offset)
+
+
+@router.get("/users/{user_id}", response_model=None)
+async def get_user_model(
+    user_id: str,
+    user_dao: UserDAO = Depends(),
+) -> Optional[UserModel]:
+    """Retrieve a user object from the database."""
+    return await user_dao.get_user_by_id(user_id)
+
+
+@router.get("/follow_user/{user_id}/{followed_user_id}", response_model=None)
+async def follow_user(
+    user_id: str,
+    followed_user_id: str,
+    relationship_dao: RelationshipDAO = Depends(),
+) -> None:
+    """Follow a user."""
+    await relationship_dao.create_relationship_model(user_id, followed_user_id)
+
+
+@router.get("/get_following/{user_id}", response_model=None)
+async def get_following(
+    user_id: str,
+    relationship_dao: RelationshipDAO = Depends(),
+) -> List[RelationshipModel]:
+    """Get following users."""
+    return await relationship_dao.get_following_by_id(user_id)
+
+
+@router.get("/get_followers/{user_id}", response_model=None)
+async def get_followers(
+    user_id: str,
+    relationship_dao: RelationshipDAO = Depends(),
+) -> List[RelationshipModel]:
+    """Get followers users."""
+    return await relationship_dao.get_followers_by_id(user_id)

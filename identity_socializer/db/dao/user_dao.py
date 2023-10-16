@@ -69,3 +69,9 @@ class UserDAO:
             query = query.where(UserModel.first_name == first_name)
         rows = await self.session.execute(query)
         return list(rows.scalars().fetchall())
+
+    async def get_user_by_id(self, user_id: str) -> Optional[UserModel]:
+        """Get specific user model."""
+        query = select(UserModel).where(UserModel.id == user_id)
+        rows = await self.session.execute(query)
+        return rows.scalars().first()
