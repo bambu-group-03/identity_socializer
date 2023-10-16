@@ -18,7 +18,7 @@ depends_on = None
 def upgrade() -> None:
     op.create_table(
         "relationships",
-        sa.Column("id", sa.Integer(), autoincrement=True, nullable=False),
+        sa.Column("id", sa.Uuid(), nullable=False),
         sa.Column("follower_id", sa.String(), nullable=False),
         sa.Column("following_id", sa.String(), nullable=False),
         sa.Column("created_at", sa.DateTime(), nullable=False),

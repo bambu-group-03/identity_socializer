@@ -1,8 +1,9 @@
 import datetime
+import uuid
 
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy.sql.sqltypes import DateTime, String
+from sqlalchemy.sql.sqltypes import DateTime, String, Uuid
 
 from identity_socializer.db.base import Base
 
@@ -14,7 +15,11 @@ class RelationshipModel(Base):
 
     length = 200
 
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[uuid.UUID] = mapped_column(
+        Uuid,
+        default=uuid.uuid4,
+        primary_key=True,
+    )
     follower_id: Mapped[str] = mapped_column(String(length), ForeignKey("users.id"))
     following_id: Mapped[str] = mapped_column(String(length), ForeignKey("users.id"))
     created_at: Mapped[DateTime] = mapped_column(

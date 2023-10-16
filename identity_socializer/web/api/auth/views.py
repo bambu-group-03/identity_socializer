@@ -5,7 +5,6 @@ from firebase_admin import auth
 
 from identity_socializer.db.dao.relationship_dao import RelationshipDAO
 from identity_socializer.db.dao.user_dao import UserDAO
-from identity_socializer.db.models.relationship_model import RelationshipModel
 from identity_socializer.db.models.user_model import UserModel
 from identity_socializer.web.api.auth.schema import (
     SecurityToken,
@@ -77,29 +76,33 @@ async def get_user_model(
     return await user_dao.get_user_by_id(user_id)
 
 
-@router.get("/follow_user/{user_id}/{followed_user_id}", response_model=None)
+@router.post("/{user_id}/follow/{followed_user_id}", response_model=None)
 async def follow_user(
     user_id: str,
     followed_user_id: str,
     relationship_dao: RelationshipDAO = Depends(),
 ) -> None:
-    """Follow a user."""
+    """
+    Follow a user.
+
+    If user_id or followed_user_id does not exist, the relationship will not be created.
+    """
     await relationship_dao.create_relationship_model(user_id, followed_user_id)
 
 
-@router.get("/get_following/{user_id}", response_model=None)
+@router.get("/{user_id}/following", response_model=None)
 async def get_following(
     user_id: str,
     relationship_dao: RelationshipDAO = Depends(),
-) -> List[RelationshipModel]:
-    """Get following users."""
+) -> List[UserModel]:
+    """Get following of user_id."""
     return await relationship_dao.get_following_by_id(user_id)
 
 
-@router.get("/get_followers/{user_id}", response_model=None)
+@router.get("/{user_id}/followers", response_model=None)
 async def get_followers(
     user_id: str,
     relationship_dao: RelationshipDAO = Depends(),
-) -> List[RelationshipModel]:
-    """Get followers users."""
+) -> List[UserModel]:
+    """Get followers of user_id."""
     return await relationship_dao.get_followers_by_id(user_id)
