@@ -1,7 +1,7 @@
 from typing import List
 
 from fastapi import Depends
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from identity_socializer.db.dependencies import get_db_session
@@ -27,6 +27,18 @@ class RelationshipDAO:
         )
 
         self.session.add(relationship_model)
+
+    async def delete_relationship_model(
+        self,
+        follower_id: str,
+        following_id: str,
+    ) -> None:
+        """Delete single relationship from session."""
+        query = delete(RelationshipModel).where(
+            RelationshipModel.follower_id == follower_id,
+            RelationshipModel.following_id == following_id,
+        )
+        await self.session.execute(query)
 
     async def get_following_by_id(self, user_id: str) -> List[UserModel]:
         """Get following of user_id."""

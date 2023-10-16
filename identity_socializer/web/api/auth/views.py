@@ -90,6 +90,22 @@ async def follow_user(
     await relationship_dao.create_relationship_model(user_id, followed_user_id)
 
 
+@router.delete("/{user_id}/unfollow/{followed_user_id}", response_model=None)
+async def unfollow_user(
+    user_id: str,
+    followed_user_id: str,
+    relationship_dao: RelationshipDAO = Depends(),
+) -> None:
+    """
+    Unfollow a user.
+
+    Delete the relationship model between user_id and followed_user_id.
+    If the relationship between user_id and followed_user_id does not exist,
+    anything will happen.
+    """
+    await relationship_dao.delete_relationship_model(user_id, followed_user_id)
+
+
 @router.get("/{user_id}/following", response_model=None)
 async def get_following(
     user_id: str,
