@@ -36,10 +36,3 @@ class SimpleUserModelDTO(BaseModel):
     name: str
     email: str
     model_config = ConfigDict(from_attributes=True)
-
-
-class IdUserModel(BaseModel):
-    """Message model for requests with user id."""
-
-    id: str
-    model_config = ConfigDict(from_attributes=True)

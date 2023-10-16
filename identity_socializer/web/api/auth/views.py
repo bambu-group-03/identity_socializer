@@ -6,7 +6,6 @@ from firebase_admin import auth
 from identity_socializer.db.dao.user_dao import UserDAO
 from identity_socializer.db.models.user_model import UserModel
 from identity_socializer.web.api.auth.schema import (
-    IdUserModel,
     SecurityToken,
     SimpleUserModelDTO,
     Success,
@@ -66,15 +65,13 @@ async def update_user(
     )
 
 
-@router.put("/delete_user", response_model=None)
+@router.put("/delete_user/{user_id}", response_model=None)
 async def delete_user(
-    user: IdUserModel,
+    user_id: str,
     user_dao: UserDAO = Depends(),
 ) -> None:
-    """Update a user."""
-    await user_dao.delete_user_model(
-        uid=user.id,
-    )
+    """Block a single user."""
+    await user_dao.delete_user_model(user_id)
 
 
 @router.get("/users", response_model=List[UserModelDTO])

@@ -67,13 +67,13 @@ class UserDAO:
 
     async def delete_user_model(
         self,
-        uid: str,
+        user_id: str,
     ) -> None:
 
         """Soft delete a single user to session."""
         stmt = (
             update(UserModel)
-            .where(UserModel.id == uid)
+            .where(UserModel.id == user_id)
             .values(
                 blocked=True,
             )
