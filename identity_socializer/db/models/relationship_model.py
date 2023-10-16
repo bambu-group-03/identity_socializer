@@ -1,8 +1,8 @@
 import datetime
 
-from sqlalchemy import DATETIME, ForeignKey
+from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy.sql.sqltypes import String
+from sqlalchemy.sql.sqltypes import DateTime, String
 
 from identity_socializer.db.base import Base
 
@@ -17,8 +17,8 @@ class RelationshipModel(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     follower_id: Mapped[str] = mapped_column(String(length), ForeignKey("users.id"))
     following_id: Mapped[str] = mapped_column(String(length), ForeignKey("users.id"))
-    created_at: Mapped[DATETIME] = mapped_column(
-        DATETIME,
+    created_at: Mapped[DateTime] = mapped_column(
+        DateTime,
         default=datetime.datetime.utcnow(),
     )
 
