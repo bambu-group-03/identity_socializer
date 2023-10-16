@@ -1,8 +1,7 @@
 import datetime
 
-from sqlalchemy import DATETIME
 from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy.sql.sqltypes import Boolean, String
+from sqlalchemy.sql.sqltypes import Boolean, DateTime, String
 
 from identity_socializer.db.base import Base
 
@@ -22,8 +21,8 @@ class UserModel(Base):
     bio_msg: Mapped[str] = mapped_column(String(length), nullable=True)
     profile_photo_id: Mapped[str] = mapped_column(String(length), nullable=True)
     blocked: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
-    created_at: Mapped[DATETIME] = mapped_column(
-        DATETIME,
+    created_at: Mapped[DateTime] = mapped_column(
+        DateTime,
         default=datetime.datetime.utcnow(),
         nullable=False,
     )
