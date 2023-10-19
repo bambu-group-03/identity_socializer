@@ -59,6 +59,7 @@ async def update_user(
         uid=user.id,
         first_name=user.first_name,
         last_name=user.last_name,
+        username=user.username,
         phone_number=user.phone_number,
         bio_msg=user.bio_msg,
         profile_photo_id=user.profile_photo_id,

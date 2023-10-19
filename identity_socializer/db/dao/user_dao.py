@@ -20,6 +20,7 @@ class UserDAO:
         email: str,
         first_name: Optional[str] = None,
         last_name: Optional[str] = None,
+        username: Optional[str] = None,
         phone_number: Optional[str] = None,
         bio_msg: Optional[str] = None,
     ) -> None:
@@ -32,6 +33,7 @@ class UserDAO:
         user_model = UserModel(
             first_name=first_name,
             last_name=last_name,
+            username=username,
             phone_number=phone_number,
             bio_msg=bio_msg,
             id=uid,
@@ -45,6 +47,7 @@ class UserDAO:
         uid: str,
         first_name: Optional[str] = None,
         last_name: Optional[str] = None,
+        username: Optional[str] = None,
         phone_number: Optional[str] = None,
         bio_msg: Optional[str] = None,
         profile_photo_id: Optional[str] = None,
@@ -57,6 +60,7 @@ class UserDAO:
             .values(
                 first_name=first_name,
                 last_name=last_name,
+                username=username,
                 phone_number=phone_number,
                 bio_msg=bio_msg,
                 profile_photo_id=profile_photo_id,

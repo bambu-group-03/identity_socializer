@@ -17,6 +17,7 @@ class UserModel(Base):
     email: Mapped[str] = mapped_column(String(length))
     first_name: Mapped[str] = mapped_column(String(length), nullable=True)
     last_name: Mapped[str] = mapped_column(String(length), nullable=True)
+    username: Mapped[str] = mapped_column(String(length), nullable=True)
     phone_number: Mapped[str] = mapped_column(String(length), nullable=True)
     bio_msg: Mapped[str] = mapped_column(String(length), nullable=True)
     profile_photo_id: Mapped[str] = mapped_column(String(length), nullable=True)
