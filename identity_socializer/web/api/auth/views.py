@@ -3,10 +3,13 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException
 from firebase_admin import auth
 
+from identity_socializer.db.dao.admin_dao import AdminDAO
 from identity_socializer.db.dao.relationship_dao import RelationshipDAO
 from identity_socializer.db.dao.user_dao import UserDAO
+from identity_socializer.db.models.admin_model import AdminModel
 from identity_socializer.db.models.user_model import UserModel
 from identity_socializer.web.api.auth.schema import (
+    AdminDTO,
     SecurityToken,
     SimpleUserModelDTO,
     Success,
@@ -65,6 +68,28 @@ async def get_user_models(
     :return: list of users objects from database.
     """
     return await user_dao.get_all_users(limit=limit, offset=offset)
+
+
+@router.post("/create_admin", response_model=None)
+async def create_admin(
+    admin: AdminDTO,
+    admin_dao: AdminDAO = Depends(),
+) -> None:
+    """Create an admin."""
+    await admin_dao.create_admin_model(
+        admin_id=admin.id,
+        email=admin.email,
+    )
+
+
+@router.get("/admins", response_model=None)
+async def get_admin_models(
+    limit: int = 10,
+    offset: int = 0,
+    user_dao: AdminDAO = Depends(),
+) -> List[AdminModel]:
+    """Retrieve all admins from the database."""
+    return await user_dao.get_all_admins(limit=limit, offset=offset)
 
 
 @router.get("/users/{user_id}", response_model=None)

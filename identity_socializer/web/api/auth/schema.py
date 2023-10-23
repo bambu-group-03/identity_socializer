@@ -34,3 +34,11 @@ class SimpleUserModelDTO(BaseModel):
     name: str
     email: str
     model_config = ConfigDict(from_attributes=True)
+
+
+class AdminDTO(BaseModel):
+    """Message model for admin register."""
+
+    id: str
+    email: str
+    model_config = ConfigDict(from_attributes=True)
