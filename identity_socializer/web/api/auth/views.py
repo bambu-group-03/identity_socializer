@@ -1,9 +1,10 @@
-from typing import List
+from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException
 from firebase_admin import auth
 
 from identity_socializer.db.dao.admin_dao import AdminDAO
+from identity_socializer.db.dao.relationship_dao import RelationshipDAO
 from identity_socializer.db.dao.user_dao import UserDAO
 from identity_socializer.db.models.admin_model import AdminModel
 from identity_socializer.db.models.user_model import UserModel
@@ -89,3 +90,60 @@ async def get_admin_models(
 ) -> List[AdminModel]:
     """Retrieve all admins from the database."""
     return await user_dao.get_all_admins(limit=limit, offset=offset)
+
+
+@router.get("/users/{user_id}", response_model=None)
+async def get_user_model(
+    user_id: str,
+    user_dao: UserDAO = Depends(),
+) -> Optional[UserModel]:
+    """Retrieve a user object from the database."""
+    return await user_dao.get_user_by_id(user_id)
+
+
+@router.post("/{user_id}/follow/{followed_user_id}", response_model=None)
+async def follow_user(
+    user_id: str,
+    followed_user_id: str,
+    relationship_dao: RelationshipDAO = Depends(),
+) -> None:
+    """
+    Follow a user.
+
+    If user_id or followed_user_id does not exist, the relationship will not be created.
+    """
+    await relationship_dao.create_relationship_model(user_id, followed_user_id)
+
+
+@router.delete("/{user_id}/unfollow/{followed_user_id}", response_model=None)
+async def unfollow_user(
+    user_id: str,
+    followed_user_id: str,
+    relationship_dao: RelationshipDAO = Depends(),
+) -> None:
+    """
+    Unfollow a user.
+
+    Delete the relationship model between user_id and followed_user_id.
+    If the relationship between user_id and followed_user_id does not exist,
+    anything will happen.
+    """
+    await relationship_dao.delete_relationship_model(user_id, followed_user_id)
+
+
+@router.get("/{user_id}/following", response_model=None)
+async def get_following(
+    user_id: str,
+    relationship_dao: RelationshipDAO = Depends(),
+) -> List[UserModel]:
+    """Get following of user_id."""
+    return await relationship_dao.get_following_by_id(user_id)
+
+
+@router.get("/{user_id}/followers", response_model=None)
+async def get_followers(
+    user_id: str,
+    relationship_dao: RelationshipDAO = Depends(),
+) -> List[UserModel]:
+    """Get followers of user_id."""
+    return await relationship_dao.get_followers_by_id(user_id)
