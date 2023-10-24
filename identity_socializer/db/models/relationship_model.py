@@ -24,7 +24,7 @@ class RelationshipModel(Base):
     following_id: Mapped[str] = mapped_column(String(length), ForeignKey("users.id"))
     created_at: Mapped[DateTime] = mapped_column(
         DateTime,
-        default=datetime.datetime.utcnow(),
+        default=datetime.datetime.utcnow,
     )
 
     follower = relationship("UserModel", foreign_keys=[follower_id])
