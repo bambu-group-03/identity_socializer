@@ -22,8 +22,11 @@ class UserModelDTO(BaseModel):
     email: str
     first_name: Optional[str]
     last_name: Optional[str]
+    username: Optional[str]
     phone_number: Optional[str]
     bio_msg: Optional[str]
+    profile_photo_id: Optional[str]
+    blocked: bool
     model_config = ConfigDict(from_attributes=True)
 
 

@@ -1,7 +1,7 @@
 from typing import List, Optional
 
 from fastapi import Depends
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from identity_socializer.db.dependencies import get_db_session
@@ -20,6 +20,7 @@ class UserDAO:
         email: str,
         first_name: Optional[str] = None,
         last_name: Optional[str] = None,
+        username: Optional[str] = None,
         phone_number: Optional[str] = None,
         bio_msg: Optional[str] = None,
     ) -> None:
@@ -32,6 +33,7 @@ class UserDAO:
         user_model = UserModel(
             first_name=first_name,
             last_name=last_name,
+            username=username,
             phone_number=phone_number,
             bio_msg=bio_msg,
             id=uid,
@@ -39,6 +41,49 @@ class UserDAO:
         )
 
         self.session.add(user_model)
+
+    async def update_user_model(
+        self,
+        uid: str,
+        first_name: Optional[str] = None,
+        last_name: Optional[str] = None,
+        username: Optional[str] = None,
+        phone_number: Optional[str] = None,
+        bio_msg: Optional[str] = None,
+        profile_photo_id: Optional[str] = None,
+    ) -> None:
+
+        """Update single user to session."""
+        stmt = (
+            update(UserModel)
+            .where(UserModel.id == uid)
+            .values(
+                first_name=first_name,
+                last_name=last_name,
+                username=username,
+                phone_number=phone_number,
+                bio_msg=bio_msg,
+                profile_photo_id=profile_photo_id,
+            )
+        )
+
+        await self.session.execute(stmt)
+
+    async def delete_user_model(
+        self,
+        user_id: str,
+    ) -> None:
+
+        """Soft delete a single user to session."""
+        stmt = (
+            update(UserModel)
+            .where(UserModel.id == user_id)
+            .values(
+                blocked=True,
+            )
+        )
+
+        await self.session.execute(stmt)
 
     async def get_all_users(self, limit: int, offset: int) -> List[UserModel]:
         """

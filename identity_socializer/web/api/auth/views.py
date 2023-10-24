@@ -53,6 +53,32 @@ async def register(
     )
 
 
+@router.put("/update_user", response_model=None)
+async def update_user(
+    user: UserModelDTO,
+    user_dao: UserDAO = Depends(),
+) -> None:
+    """Update a user."""
+    await user_dao.update_user_model(
+        uid=user.id,
+        first_name=user.first_name,
+        last_name=user.last_name,
+        username=user.username,
+        phone_number=user.phone_number,
+        bio_msg=user.bio_msg,
+        profile_photo_id=user.profile_photo_id,
+    )
+
+
+@router.put("/delete_user/{user_id}", response_model=None)
+async def delete_user(
+    user_id: str,
+    user_dao: UserDAO = Depends(),
+) -> None:
+    """Block a single user."""
+    await user_dao.delete_user_model(user_id)
+
+
 @router.get("/users", response_model=List[UserModelDTO])
 async def get_user_models(
     limit: int = 10,
