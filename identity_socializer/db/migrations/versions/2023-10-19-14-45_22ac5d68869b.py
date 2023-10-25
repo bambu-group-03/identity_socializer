@@ -1,7 +1,7 @@
 """create admin table
 
 Revision ID: 22ac5d68869b
-Revises: 847eee4ea866
+Revises: 6a777ccf275f
 Create Date: 2023-10-19 14:45:52.775871
 
 """
@@ -10,7 +10,7 @@ from alembic import op
 
 # revision identifiers, used by Alembic.
 revision = "22ac5d68869b"
-down_revision = "847eee4ea866"
+down_revision = "6a777ccf275f"
 branch_labels = None
 depends_on = None
 
