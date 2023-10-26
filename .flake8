@@ -80,7 +80,8 @@ ignore =
   DAR101,
   WPS211,
   DAR102,
-  D201
+  D201,
+  E800
 
 per-file-ignores =
   ; all tests
