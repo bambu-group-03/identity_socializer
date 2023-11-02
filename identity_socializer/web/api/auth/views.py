@@ -137,6 +137,7 @@ async def follow_user(
     Follow a user.
 
     If user_id or followed_user_id does not exist, the relationship will not be created.
+    If user_id and followed_user_id are the same, raise an exception.
     """
     await relationship_dao.create_relationship_model(user_id, followed_user_id)
 

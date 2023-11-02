@@ -1,4 +1,4 @@
-"""Create unique constraint for username in users table
+"""Create unique constraint for username and followers
 
 Revision ID: 6ab7a6b6f682
 Revises: 22ac5d68869b
@@ -16,7 +16,13 @@ depends_on = None
 
 def upgrade() -> None:
     op.create_unique_constraint("uq_user_username", "users", ["username"])
+    op.create_unique_constraint(
+        "uq_follower_following",
+        "relationships",
+        ["follower_id", "following_id"],
+    )
 
 
 def downgrade() -> None:
     op.drop_constraint("uq_user_username", "users")
+    op.drop_constraint("uq_follower_following", "relationships")
