@@ -69,17 +69,33 @@ class UserDAO:
 
         await self.session.execute(stmt)
 
-    async def delete_user_model(
+    async def block_user(
         self,
         user_id: str,
     ) -> None:
 
-        """Soft delete a single user to session."""
+        """Block user by id."""
         stmt = (
             update(UserModel)
             .where(UserModel.id == user_id)
             .values(
                 blocked=True,
+            )
+        )
+
+        await self.session.execute(stmt)
+
+    async def unblock_user(
+        self,
+        user_id: str,
+    ) -> None:
+
+        """Unblock user by id."""
+        stmt = (
+            update(UserModel)
+            .where(UserModel.id == user_id)
+            .values(
+                blocked=False,
             )
         )
 

@@ -70,13 +70,22 @@ async def update_user(
     )
 
 
-@router.put("/delete_user/{user_id}", response_model=None)
-async def delete_user(
+@router.put("/block_user/{user_id}")
+async def block_user(
     user_id: str,
     user_dao: UserDAO = Depends(),
 ) -> None:
     """Block a single user."""
-    await user_dao.delete_user_model(user_id)
+    await user_dao.block_user(user_id)
+
+
+@router.put("/unblock_user/{user_id}")
+async def unblock_user(
+    user_id: str,
+    user_dao: UserDAO = Depends(),
+) -> None:
+    """Unblock a single user."""
+    await user_dao.unblock_user(user_id)
 
 
 @router.get("/users", response_model=List[UserModelDTO])
