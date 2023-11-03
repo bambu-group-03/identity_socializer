@@ -136,3 +136,14 @@ class UserDAO:
         query = select(UserModel).where(UserModel.id == user_id)
         rows = await self.session.execute(query)
         return rows.scalars().first()
+
+    async def filter_user(
+        self,
+        username: str,
+    ) -> List[UserModel]:
+        """Get list of filtered users by username and/or id."""
+        query = select(UserModel)
+        query = query.filter(UserModel.username.ilike(f"%{username}%"))
+
+        rows = await self.session.execute(query)
+        return list(rows.scalars().fetchall())
