@@ -32,7 +32,6 @@ class SimpleUserModelDTO(BaseModel):
     """Message model for user register."""
 
     id: str
-    name: str
     email: str
     model_config = ConfigDict(from_attributes=True)
 

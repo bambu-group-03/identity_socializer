@@ -69,3 +69,15 @@ class RelationshipDAO:
         rows = await self.session.execute(query)
 
         return list(rows.scalars().fetchall())
+
+    async def count_following_by_user_id(self, user_id: str) -> int:
+        """Get number of following of user_id."""
+        following = await self.get_following_by_id(user_id)
+
+        return len(following)
+
+    async def count_followers_by_user_id(self, user_id: str) -> int:
+        """Get number of followers of user_id."""
+        followers = await self.get_followers_by_id(user_id)
+
+        return len(followers)
