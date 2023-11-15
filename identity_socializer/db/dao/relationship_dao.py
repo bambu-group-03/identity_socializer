@@ -81,3 +81,15 @@ class RelationshipDAO:
         followers = await self.get_followers_by_id(user_id)
 
         return len(followers)
+
+    async def is_followed_by_user(self, current_user_id: str, user_id: str) -> bool:
+        """Returns true if user_id is followed by current_user_id."""
+        query = select(RelationshipModel)
+        query = query.where(RelationshipModel.follower_id == current_user_id).where(
+            RelationshipModel.following_id == user_id,
+        )
+
+        rows = await self.session.execute(query)
+        my_list = list(rows.scalars().fetchall())
+
+        return bool(my_list)

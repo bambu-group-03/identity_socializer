@@ -3,7 +3,8 @@ from typing import List
 from fastapi import APIRouter, Depends
 
 from identity_socializer.db.dao.relationship_dao import RelationshipDAO
-from identity_socializer.db.models.user_model import UserModel
+from identity_socializer.web.api.auth.schema import AppUserModel
+from identity_socializer.web.api.utils import complete_users
 
 router = APIRouter()
 
@@ -42,9 +43,10 @@ async def unfollow_user(
 async def get_following(
     user_id: str,
     relationship_dao: RelationshipDAO = Depends(),
-) -> List[UserModel]:
+) -> List[AppUserModel]:
     """Get following of user_id."""
-    return await relationship_dao.get_following_by_id(user_id)
+    following = await relationship_dao.get_following_by_id(user_id)
+    return await complete_users(following, user_id, relationship_dao)
 
 
 @router.get("/{user_id}/count_following", response_model=None)
@@ -60,9 +62,10 @@ async def count_following_by_user_id(
 async def get_followers(
     user_id: str,
     relationship_dao: RelationshipDAO = Depends(),
-) -> List[UserModel]:
+) -> List[AppUserModel]:
     """Get followers of user_id."""
-    return await relationship_dao.get_followers_by_id(user_id)
+    followers = await relationship_dao.get_followers_by_id(user_id)
+    return await complete_users(followers, user_id, relationship_dao)
 
 
 @router.get("/{user_id}/count_followers", response_model=None)

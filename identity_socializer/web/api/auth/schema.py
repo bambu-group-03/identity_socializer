@@ -43,3 +43,19 @@ class AdminDTO(BaseModel):
     id: str
     email: str
     model_config = ConfigDict(from_attributes=True)
+
+
+class AppUserModel(BaseModel):
+    """Message model for user register."""
+
+    id: str
+    first_name: Optional[str]
+    last_name: Optional[str]
+    username: Optional[str]
+    phone_number: Optional[str]
+    bio_msg: Optional[str]
+    profile_photo_id: Optional[str]
+    ubication: Optional[str]
+    is_followed: Optional[bool]
+
+    model_config = ConfigDict(from_attributes=True)

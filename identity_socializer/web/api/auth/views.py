@@ -4,16 +4,19 @@ from fastapi import APIRouter, Depends, HTTPException
 from firebase_admin import auth
 
 from identity_socializer.db.dao.admin_dao import AdminDAO
+from identity_socializer.db.dao.relationship_dao import RelationshipDAO
 from identity_socializer.db.dao.user_dao import UserDAO
 from identity_socializer.db.models.admin_model import AdminModel
 from identity_socializer.db.models.user_model import UserModel
 from identity_socializer.web.api.auth.schema import (
     AdminDTO,
+    AppUserModel,
     SecurityToken,
     SimpleUserModelDTO,
     Success,
     UserModelDTO,
 )
+from identity_socializer.web.api.utils import complete_user
 
 router = APIRouter()
 
@@ -127,10 +130,17 @@ async def get_admin_models(
     return await user_dao.get_all_admins(limit=limit, offset=offset)
 
 
-@router.get("/users/{user_id}", response_model=None)
+@router.get("/{current_user_id}/users/{user_id}", response_model=None)
 async def get_user_model(
+    current_user_id: str,
     user_id: str,
     user_dao: UserDAO = Depends(),
-) -> Optional[UserModel]:
+    relationship_dao: RelationshipDAO = Depends(),
+) -> Optional[AppUserModel]:
     """Retrieve a user object from the database."""
-    return await user_dao.get_user_by_id(user_id)
+    user = await user_dao.get_user_by_id(user_id)
+
+    if not user:
+        return None
+
+    return await complete_user(user, current_user_id, relationship_dao)
