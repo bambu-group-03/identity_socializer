@@ -1,15 +1,24 @@
 from typing import List
 
 from fastapi import APIRouter, HTTPException, status
+from mongoengine import connect
 
 from identity_socializer.db.collections.chats import get_chat, get_chats_by_user_id
 from identity_socializer.db.collections.messages import (
     create_message_in_chat,
     get_messages_by_chat_id,
 )
+from identity_socializer.settings import settings
 from identity_socializer.web.api.chat.schema import ChatDTO, MessageDTO, MessageSchema
 
 router = APIRouter()
+
+# Create connection to mongo db
+connect(
+    db="identity_socializer",
+    host=settings.mongo_host,
+    port=27017,
+)
 
 
 @router.post("/send_message", response_model=None)
