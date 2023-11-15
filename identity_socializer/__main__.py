@@ -3,6 +3,7 @@ import shutil
 
 import uvicorn
 from firebase_admin import credentials, initialize_app
+from mongoengine import connect
 
 from identity_socializer.settings import settings
 
@@ -47,6 +48,12 @@ def main() -> None:
     )
     firebase_cred = credentials.Certificate("firebase_credentials.json")
     initialize_app(firebase_cred)
+    mongo_port = 27017
+    connect(
+        db="identity_socializer",
+        host=settings.mongo_host,
+        port=mongo_port,
+    )
 
 
 if __name__ == "__main__":

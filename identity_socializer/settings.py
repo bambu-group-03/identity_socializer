@@ -68,6 +68,7 @@ class Settings(BaseSettings):
         )
 
     content_discovery_url: str = "http://localhost:9876"
+    mongo_host: str = "mongodb://localhost:27017"
     model_config = SettingsConfigDict(
         env_file=".env",
         env_prefix="IDENTITY_SOCIALIZER_",

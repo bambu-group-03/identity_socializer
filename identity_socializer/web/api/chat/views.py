@@ -1,7 +1,6 @@
 from typing import List
 
 from fastapi import APIRouter, HTTPException, status
-from mongoengine import connect
 
 from identity_socializer.db.collections.chats import get_chat, get_chats_by_user_id
 from identity_socializer.db.collections.messages import (
@@ -22,15 +21,6 @@ def send_message(
 
     :raises HTTPException: If something goes wrong.
     """
-    # TODO fix this
-    port = 27017
-
-    connect(
-        db="identity_socializer",
-        host="mongodb://identity_socializer-mongo-db-1",
-        port=port,
-    )
-
     try:
         # Create chat for sender
         chat_from_id = get_chat(body.from_id, body.to_id)
@@ -68,15 +58,6 @@ def get_chats(
 
     :raises HTTPException: If something goes wrong.
     """
-    # TODO fix this
-    port = 27017
-
-    connect(
-        db="identity_socializer",
-        host="mongodb://identity_socializer-mongo-db-1",
-        port=port,
-    )
-
     try:
         my_chats = []
         chats = get_chats_by_user_id(user_id)
@@ -104,19 +85,10 @@ def get_messages_by_chat(
     chat_id: str,
 ) -> List[MessageSchema]:
     """
-    Get messages for a given user.
+    Get chats for a given user.
 
     :raises HTTPException: If something goes wrong.
     """
-    # TODO fix this
-    port = 27017
-
-    connect(
-        db="identity_socializer",
-        host="mongodb://identity_socializer-mongo-db-1",
-        port=port,
-    )
-
     try:
         my_messages = []
         messages = get_messages_by_chat_id(chat_id)
