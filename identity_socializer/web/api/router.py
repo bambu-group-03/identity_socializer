@@ -2,6 +2,7 @@ from fastapi.routing import APIRouter
 
 from identity_socializer.web.api import (
     auth,
+    chat,
     docs,
     dummy,
     echo,
@@ -22,3 +23,4 @@ api_router.include_router(
     prefix="/interactions",
     tags=["interactions"],
 )
+api_router.include_router(chat.router, prefix="/chat", tags=["chat"])

@@ -57,11 +57,20 @@ services:
       db:
         condition: service_healthy
 
-
+  mongo-db:
+    image: mongo:latest
+    ports:
+    - "27017:27017"
+    volumes:
+    - identity_socializer-db-mongo-data:/data/db
+    networks:
+    - microservices
 
 volumes:
   identity_socializer-db-data:
     name: identity_socializer-db-data
+  identity_socializer-db-mongo-data:
+    name: identity_socializer-db-mongo-data
 
 networks:
   microservices:

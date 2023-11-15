@@ -27,6 +27,7 @@ prometheus-client = "^0.17.0"
 prometheus-fastapi-instrumentator = "6.0.0"
 firebase-admin = "^6.2.0"
 setuptools = "65.5.1"
+mongoengine = "*"
 
 
 [tool.poetry.dev-dependencies]
@@ -42,6 +43,8 @@ pytest-cov = "^4.0.0"
 anyio = "^3.6.2"
 pytest-env = "^0.8.1"
 httpx = "^0.23.3"
+mongoengine = "*"
+
 
 [tool.isort]
 profile = "black"
