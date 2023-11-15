@@ -44,6 +44,7 @@ class RelationshipDAO:
         """Get following of user_id."""
         query = (
             select(UserModel)
+            .distinct()
             .join(
                 RelationshipModel.following,
             )
@@ -59,6 +60,7 @@ class RelationshipDAO:
         """Get followers of user_id."""
         query = (
             select(UserModel)
+            .distinct()
             .join(
                 RelationshipModel.follower,
             )
