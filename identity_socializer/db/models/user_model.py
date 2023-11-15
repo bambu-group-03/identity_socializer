@@ -20,6 +20,7 @@ class UserModel(Base):
     username: Mapped[str] = mapped_column(String(length), nullable=True)
     phone_number: Mapped[str] = mapped_column(String(length), nullable=True)
     bio_msg: Mapped[str] = mapped_column(String(length), nullable=True)
+    ubication: Mapped[str] = mapped_column(String(length), nullable=True)
     profile_photo_id: Mapped[str] = mapped_column(String(length), nullable=True)
     blocked: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     created_at: Mapped[DateTime] = mapped_column(

@@ -23,6 +23,7 @@ class UserDAO:
         username: Optional[str] = None,
         phone_number: Optional[str] = None,
         bio_msg: Optional[str] = None,
+        ubication: Optional[str] = None,
     ) -> None:
 
         """
@@ -38,6 +39,7 @@ class UserDAO:
             bio_msg=bio_msg,
             id=uid,
             email=email,
+            ubication=ubication,
         )
 
         self.session.add(user_model)
@@ -51,6 +53,7 @@ class UserDAO:
         phone_number: Optional[str] = None,
         bio_msg: Optional[str] = None,
         profile_photo_id: Optional[str] = None,
+        ubication: Optional[str] = None,
     ) -> None:
 
         """Update single user to session."""
@@ -64,6 +67,7 @@ class UserDAO:
                 phone_number=phone_number,
                 bio_msg=bio_msg,
                 profile_photo_id=profile_photo_id,
+                ubication=ubication,
             )
         )
 
