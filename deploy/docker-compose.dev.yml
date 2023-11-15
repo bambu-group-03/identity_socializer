@@ -17,3 +17,7 @@ services:
     ports:
       # Exposes database port.
     - "5432:5432"
+  mongo:
+    ports:
+      # Exposes database port.
+    - "27017:27017"
