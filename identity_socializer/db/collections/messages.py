@@ -1,8 +1,10 @@
 from datetime import datetime
+from typing import List
 
 from mongoengine import DateTimeField, Document, ReferenceField, StringField
 
 from identity_socializer.db.collections.chats import Chat
+from identity_socializer.db.utils import is_valid_mongo_id
 
 
 class Message(Document):
@@ -33,3 +35,11 @@ def create_message_in_chat(
         content=content,
     )
     new_message.save()
+
+
+def get_messages_by_chat_id(chat_id: str) -> List[Message]:
+    """Get messages by chat id."""
+    if not is_valid_mongo_id(chat_id):
+        return []
+
+    return Message.objects.filter(chat_id=chat_id)

@@ -42,3 +42,11 @@ async def drop_database() -> None:
         )
         await conn.execute(text(disc_users))
         await conn.execute(text(f'DROP DATABASE "{settings.db_base}"'))
+
+
+def is_valid_mongo_id(some_id: str) -> bool:
+    """Check if some_id is valid mongo id."""
+    cond1 = len(some_id) == 12
+    cond2 = len(some_id) == 24
+
+    return cond1 or cond2

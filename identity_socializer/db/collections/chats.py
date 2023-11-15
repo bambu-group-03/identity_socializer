@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import List
 
 from mongoengine import DateTimeField, Document, StringField
 
@@ -31,3 +32,8 @@ def get_chat(owner_id: str, other_id: str) -> str:
     new_chat.save()
 
     return new_chat.id
+
+
+def get_chats_by_user_id(user_id: str) -> List[Chat]:
+    """Get chat by id."""
+    return Chat.objects.filter(owner_id=user_id)
