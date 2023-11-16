@@ -10,6 +10,16 @@ from identity_socializer.web.api.utils import complete_users
 router = APIRouter()
 
 
+@router.get("/{username}", response_model=None)
+async def admin_filter_user(
+    username: str,
+    user_dao: UserDAO = Depends(),
+    relationship_dao: RelationshipDAO = Depends(),
+) -> List[AppUserModel]:
+    """Retrieve a filtered users."""
+    return await filter_user(username, "unknown", user_dao, relationship_dao)
+
+
 @router.get("/{current_user_id}/{username}", response_model=None)
 async def filter_user(
     username: str,

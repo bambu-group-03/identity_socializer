@@ -130,6 +130,16 @@ async def get_admin_models(
     return await user_dao.get_all_admins(limit=limit, offset=offset)
 
 
+@router.get("/users/{user_id}", response_model=None)
+async def admin_get_user_model(
+    user_id: str,
+    user_dao: UserDAO = Depends(),
+    relationship_dao: RelationshipDAO = Depends(),
+) -> Optional[AppUserModel]:
+    """Retrieve a user object from the database."""
+    return await get_user_model("unknown", user_id, user_dao, relationship_dao)
+
+
 @router.get("/{current_user_id}/users/{user_id}", response_model=None)
 async def get_user_model(
     current_user_id: str,
