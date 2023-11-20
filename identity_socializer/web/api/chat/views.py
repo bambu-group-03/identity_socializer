@@ -24,7 +24,7 @@ connect(
 @router.post("/send_message", response_model=None)
 def send_message(
     body: MessageDTO,
-) -> MessageDTO:
+) -> MessageSchema:
     """
     Creates a message with the given body.
 
@@ -38,7 +38,7 @@ def send_message(
         chat_to_id = get_chat(body.to_id, body.from_id)
 
         # Create message in sender chat
-        create_message_in_chat(
+        msg = create_message_in_chat(
             chat_id=chat_from_id,
             from_id=body.from_id,
             to_id=body.to_id,
@@ -53,10 +53,13 @@ def send_message(
             content=body.content,
         )
 
-        return MessageDTO(
-            from_id=body.from_id,
-            to_id=body.to_id,
-            content=body.content,
+        return MessageSchema(
+            msg_id=str(msg.id),
+            chat_id=str(msg.chat_id.id),
+            from_id=msg.from_id,
+            to_id=msg.to_id,
+            content=msg.content,
+            created_at=str(msg.created_at),
         )
 
     except Exception as error:

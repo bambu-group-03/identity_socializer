@@ -26,7 +26,7 @@ def create_message_in_chat(
     to_id: str,
     content: str,
     chat_id: str,
-) -> None:
+) -> Message:
     """Create a message in mongo db."""
     new_message = Message(
         chat_id=chat_id,
@@ -35,6 +35,8 @@ def create_message_in_chat(
         content=content,
     )
     new_message.save()
+
+    return new_message
 
 
 def get_messages_by_chat_id(chat_id: str) -> List[Message]:
