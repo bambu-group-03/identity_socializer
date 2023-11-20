@@ -24,7 +24,7 @@ connect(
 @router.post("/send_message", response_model=None)
 def send_message(
     body: MessageDTO,
-) -> None:
+) -> MessageDTO:
     """
     Creates a message with the given body.
 
@@ -48,6 +48,12 @@ def send_message(
         # Create message in receiver chat
         create_message_in_chat(
             chat_id=chat_to_id,
+            from_id=body.from_id,
+            to_id=body.to_id,
+            content=body.content,
+        )
+
+        return MessageDTO(
             from_id=body.from_id,
             to_id=body.to_id,
             content=body.content,
