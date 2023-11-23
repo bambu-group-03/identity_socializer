@@ -8,6 +8,7 @@ from identity_socializer.web.api import (
     echo,
     filter,
     interactions,
+    logger,
     monitoring,
 )
 
@@ -24,3 +25,4 @@ api_router.include_router(
     tags=["interactions"],
 )
 api_router.include_router(chat.router, prefix="/chat", tags=["chat"])
+api_router.include_router(logger.router, prefix="/logger", tags=["logger"])
