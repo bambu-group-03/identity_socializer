@@ -38,4 +38,5 @@ async def complete_user(
         profile_photo_id=user.profile_photo_id,
         ubication=user.ubication,
         is_followed=is_followed,
+        blocked=user.blocked,
     )

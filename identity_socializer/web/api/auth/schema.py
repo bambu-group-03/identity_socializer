@@ -57,5 +57,5 @@ class AppUserModel(BaseModel):
     profile_photo_id: Optional[str]
     ubication: Optional[str]
     is_followed: Optional[bool]
-
+    blocked: bool = False
     model_config = ConfigDict(from_attributes=True)
