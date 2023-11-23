@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from identity_socializer.db.dependencies import get_db_session
 from identity_socializer.db.models.logger_model import LoggerModel
+from identity_socializer.db.models.user_model import UserModel
 from identity_socializer.db.utils import is_valid_uuid
 
 
@@ -45,3 +46,30 @@ class LoggerDAO:
 
         query = delete(LoggerModel).where(LoggerModel.id == log_id)
         await self.session.execute(query)
+
+
+class MetricDAO:
+    """Class for accessing metrics."""
+
+    def __init__(self, session: AsyncSession = Depends(get_db_session)):
+        self.session = session
+
+    async def get_blocked_rate(self) -> int:
+        """Get blocked rate."""
+        # count all users
+        users = await self.session.execute(select(UserModel))
+        n_users = len(list(users.scalars().fetchall()))
+
+        if n_users == 0:
+            return 0
+
+        # count all blocked users
+        count_blocked_users = await self.session.execute(
+            select(UserModel).where(UserModel.blocked == True),
+        )
+        n_blocked_users = len(list(count_blocked_users.scalars().fetchall()))
+
+        if n_blocked_users == 0:
+            return 0
+
+        return int((n_blocked_users / n_users) * 100)
