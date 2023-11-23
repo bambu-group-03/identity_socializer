@@ -1,7 +1,7 @@
 from typing import List, Optional
 
 from fastapi import Depends
-from sqlalchemy import select, update
+from sqlalchemy import func, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from identity_socializer.db.dependencies import get_db_session
@@ -151,3 +151,11 @@ class UserDAO:
 
         rows = await self.session.execute(query)
         return list(rows.scalars().fetchall())
+
+    async def get_user_by_username(self, username: str) -> Optional[UserModel]:
+        """Get specific user model."""
+        query = select(UserModel)
+        query = query.filter(func.lower(UserModel.username) == func.lower(username))
+
+        rows = await self.session.execute(query)
+        return rows.scalars().first()

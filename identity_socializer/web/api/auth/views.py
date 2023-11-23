@@ -130,6 +130,15 @@ async def get_admin_models(
     return await user_dao.get_all_admins(limit=limit, offset=offset)
 
 
+@router.get("/user_by_username/{username}", response_model=None)
+async def get_user_by_username(
+    username: str,
+    user_dao: UserDAO = Depends(),
+) -> Optional[UserModel]:
+    """Retrieve a user object from the database."""
+    return await user_dao.get_user_by_username(username)
+
+
 @router.get("/users/{user_id}", response_model=None)
 async def admin_get_user_model(
     user_id: str,

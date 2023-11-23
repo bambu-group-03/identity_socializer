@@ -6,6 +6,7 @@ extend-ignore = E203
 docstring_style=sphinx
 
 ignore =
+  WPS221,
   WPS432,
   WPS210,
   ; Found `f` string
