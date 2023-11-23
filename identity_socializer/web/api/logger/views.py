@@ -120,3 +120,12 @@ async def get_all_logs(
 ) -> List[LoggerModel]:
     """Get all logs."""
     return await logger_dao.get_all_logs()
+
+
+@router.delete("/delete_log/{log_id}", response_model=None)
+async def delete_log(
+    log_id: str,
+    logger_dao: LoggerDAO = Depends(),
+) -> None:
+    """Delete log."""
+    await logger_dao.delete_log(log_id)

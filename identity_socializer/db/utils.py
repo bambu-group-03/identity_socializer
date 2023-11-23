@@ -1,3 +1,6 @@
+import uuid
+from typing import Any
+
 from sqlalchemy import text
 from sqlalchemy.engine import make_url
 from sqlalchemy.ext.asyncio import create_async_engine
@@ -50,3 +53,13 @@ def is_valid_mongo_id(some_id: str) -> bool:
     cond2 = len(some_id) == 24
 
     return cond1 or cond2
+
+
+def is_valid_uuid(value: Any) -> bool:
+    """Check if value is a valid uuid."""
+    try:
+        uuid.UUID(str(value))
+
+        return True
+    except ValueError:
+        return False

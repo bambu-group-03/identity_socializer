@@ -1,11 +1,12 @@
 from typing import List, Optional
 
 from fastapi import Depends
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from identity_socializer.db.dependencies import get_db_session
 from identity_socializer.db.models.logger_model import LoggerModel
+from identity_socializer.db.utils import is_valid_uuid
 
 
 class LoggerDAO:
@@ -36,3 +37,11 @@ class LoggerDAO:
         )
 
         return list(raw_logs.scalars().fetchall())
+
+    async def delete_log(self, log_id: str) -> None:
+        """Delete log by id."""
+        if not is_valid_uuid(log_id):
+            return
+
+        query = delete(LoggerModel).where(LoggerModel.id == log_id)
+        await self.session.execute(query)

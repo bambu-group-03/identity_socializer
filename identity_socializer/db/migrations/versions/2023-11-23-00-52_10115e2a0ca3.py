@@ -18,7 +18,7 @@ depends_on = None
 def upgrade() -> None:
     op.create_table(
         "logger",
-        sa.Column("id", sa.String(), nullable=False),
+        sa.Column("id", sa.Uuid(), nullable=False),
         sa.Column("event", sa.String(), nullable=False),
         sa.Column("message", sa.String(), nullable=True),
         sa.Column("email", sa.String(), nullable=True),
