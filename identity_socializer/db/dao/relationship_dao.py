@@ -95,3 +95,13 @@ class RelationshipDAO:
         my_list = list(rows.scalars().fetchall())
 
         return bool(my_list)
+
+    async def is_mutuals(self, user1: str, user2: str) -> bool:
+        """
+        True if both users follow each other.
+
+        Does not consider if both users are the same.
+        """
+        followed = await self.is_followed_by_user(user1, user2)
+        follower = await self.is_followed_by_user(user2, user1)
+        return followed and follower
