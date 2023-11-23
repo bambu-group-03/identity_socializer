@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 
 from identity_socializer.db.dao.relationship_dao import RelationshipDAO
 from identity_socializer.web.api.auth.schema import AppUserModel
@@ -49,6 +49,24 @@ async def get_following(
     return await complete_users(following, user_id, relationship_dao)
 
 
+@router.get("/{user_id}/following/requested_by/{requesting_id}", response_model=None)
+async def get_following_requested(
+    user_id: str,
+    requesting_id: str,
+    relationship_dao: RelationshipDAO = Depends(),
+) -> List[AppUserModel]:
+    """
+    Get following of user_id if reuesting_id is authorized to view it.
+
+    :raises HTTPException: If something goes wrong.
+    """
+    mutuals = await relationship_dao.is_mutuals(user_id, requesting_id)
+    if not (mutuals or (user_id == requesting_id)):
+        raise HTTPException(status_code=401, detail="User not authorized to view")
+    following = await relationship_dao.get_following_by_id(user_id)
+    return await complete_users(following, user_id, relationship_dao)
+
+
 @router.get("/{user_id}/count_following", response_model=None)
 async def count_following_by_user_id(
     user_id: str,
@@ -64,6 +82,24 @@ async def get_followers(
     relationship_dao: RelationshipDAO = Depends(),
 ) -> List[AppUserModel]:
     """Get followers of user_id."""
+    followers = await relationship_dao.get_followers_by_id(user_id)
+    return await complete_users(followers, user_id, relationship_dao)
+
+
+@router.get("/{user_id}/followers/requested_by/{requesting_id}", response_model=None)
+async def get_followers_requested(
+    user_id: str,
+    requesting_id: str,
+    relationship_dao: RelationshipDAO = Depends(),
+) -> List[AppUserModel]:
+    """
+    Get followers of user_id.
+
+    :raises HTTPException: If something goes wrong.
+    """
+    mutuals = await relationship_dao.is_mutuals(user_id, requesting_id)
+    if not (mutuals or (user_id == requesting_id)):
+        raise HTTPException(status_code=401, detail="User not authorized to view")
     followers = await relationship_dao.get_followers_by_id(user_id)
     return await complete_users(followers, user_id, relationship_dao)
 
