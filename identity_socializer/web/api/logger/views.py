@@ -99,6 +99,21 @@ async def complete_signup_successful(
     )
 
 
+@router.post("/complete_signup_error")
+async def complete_signup_error(
+    logger_entry: LoggerEntry,
+    logger_dao: LoggerDAO = Depends(),
+) -> None:
+    """Log error complete signup."""
+    event = LogEvent.COMPLETE_SIGNUP_ERROR
+
+    await logger_dao.create_logger_model(
+        event=event.value,
+        message=logger_entry.message,
+        email=logger_entry.email,
+    )
+
+
 @router.get("/get_all_logs", response_model=None)
 async def get_all_logs(
     logger_dao: LoggerDAO = Depends(),
