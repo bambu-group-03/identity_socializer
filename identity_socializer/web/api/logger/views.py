@@ -1,7 +1,9 @@
+from typing import List
+
 from fastapi import APIRouter, Depends
 
 from identity_socializer.db.dao.logger_dao import LoggerDAO
-from identity_socializer.db.models.logger_model import LogEvent
+from identity_socializer.db.models.logger_model import LogEvent, LoggerModel
 from identity_socializer.web.api.logger.schema import LoggerEntry
 
 router = APIRouter()
@@ -80,3 +82,11 @@ async def logout_successful(
         message=logger_entry.message,
         email=logger_entry.email,
     )
+
+
+@router.get("/get_all_logs", response_model=None)
+async def get_all_logs(
+    logger_dao: LoggerDAO = Depends(),
+) -> List[LoggerModel]:
+    """Get all logs."""
+    return await logger_dao.get_all_logs()

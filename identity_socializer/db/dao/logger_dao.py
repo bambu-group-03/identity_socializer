@@ -1,6 +1,7 @@
-from typing import Optional
+from typing import List, Optional
 
 from fastapi import Depends
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from identity_socializer.db.dependencies import get_db_session
@@ -27,3 +28,11 @@ class LoggerDAO:
         )
 
         self.session.add(logger_entry)
+
+    async def get_all_logs(self) -> List[LoggerModel]:
+        """Get all logs."""
+        raw_logs = await self.session.execute(
+            select(LoggerModel),
+        )
+
+        return list(raw_logs.scalars().fetchall())
