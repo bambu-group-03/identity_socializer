@@ -39,6 +39,16 @@ async def unfollow_user(
     await relationship_dao.delete_relationship_model(user_id, followed_user_id)
 
 
+@router.get("/{user_id}/mutuals_with/{another_id}")
+async def is_mutuals(
+    user_id: str,
+    another_id: str,
+    relationship_dao: RelationshipDAO = Depends(),
+) -> bool:
+    """True if both users are mutually following each other."""
+    return await relationship_dao.is_mutuals(user_id, another_id)
+
+
 @router.get("/{user_id}/following", response_model=None)
 async def get_following(
     user_id: str,
