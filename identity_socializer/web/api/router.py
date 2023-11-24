@@ -11,6 +11,7 @@ from identity_socializer.web.api import (
     logger,
     metrics,
     monitoring,
+    notification,
 )
 
 api_router = APIRouter()
@@ -28,3 +29,8 @@ api_router.include_router(
 api_router.include_router(chat.router, prefix="/chat", tags=["chat"])
 api_router.include_router(logger.router, prefix="/logger", tags=["logger"])
 api_router.include_router(metrics.router, prefix="/metrics", tags=["metrics"])
+api_router.include_router(
+    notification.router,
+    prefix="/notification",
+    tags=["notification"],
+)
