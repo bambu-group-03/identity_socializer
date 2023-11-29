@@ -2,11 +2,15 @@ from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException
 
+from identity_socializer.db.dao.push_token_dao import PushTokenDAO
 from identity_socializer.db.dao.relationship_dao import RelationshipDAO
+from identity_socializer.services.push_notifications import PushNotifications
 from identity_socializer.web.api.auth.schema import AppUserModel
 from identity_socializer.web.api.utils import complete_users
 
 router = APIRouter()
+
+push_notifications = PushNotifications()
 
 
 @router.post("/{user_id}/follow/{followed_user_id}", response_model=None)
@@ -14,13 +18,23 @@ async def follow_user(
     user_id: str,
     followed_user_id: str,
     relationship_dao: RelationshipDAO = Depends(),
+    push_token_dao: PushTokenDAO = Depends(),
 ) -> None:
     """
     Follow a user.
 
     If user_id or followed_user_id does not exist, the relationship will not be created.
     """
-    await relationship_dao.create_relationship_model(user_id, followed_user_id)
+    relationship = await relationship_dao.create_relationship_model(
+        user_id,
+        followed_user_id,
+    )
+
+    if relationship is None:
+        return
+
+    # Notify the followed user
+    await push_notifications.new_follower(followed_user_id, push_token_dao)
 
 
 @router.delete("/{user_id}/unfollow/{followed_user_id}", response_model=None)

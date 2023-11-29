@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from fastapi import Depends
 from sqlalchemy import delete, select
@@ -19,14 +19,20 @@ class RelationshipDAO:
         self,
         follower_id: str,
         following_id: str,
-    ) -> None:
+    ) -> Optional[RelationshipModel]:
         """Add single relationship to session."""
-        relationship_model = RelationshipModel(
-            follower_id=follower_id,
-            following_id=following_id,
-        )
+        try:
+            relationship_model = RelationshipModel(
+                follower_id=follower_id,
+                following_id=following_id,
+            )
 
-        self.session.add(relationship_model)
+            self.session.add(relationship_model)
+            await self.session.flush()
+
+            return relationship_model
+        except Exception:
+            return None
 
     async def delete_relationship_model(
         self,
