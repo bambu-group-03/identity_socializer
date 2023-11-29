@@ -12,6 +12,7 @@ from identity_socializer.web.api import (
     metrics,
     monitoring,
     notification,
+    pushtoken,
 )
 
 api_router = APIRouter()
@@ -34,3 +35,4 @@ api_router.include_router(
     prefix="/notification",
     tags=["notification"],
 )
+api_router.include_router(pushtoken.router, prefix="/pushtoken", tags=["pushtoken"])
