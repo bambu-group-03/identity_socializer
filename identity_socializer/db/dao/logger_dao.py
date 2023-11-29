@@ -1,7 +1,7 @@
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from fastapi import Depends
-from sqlalchemy import delete, select
+from sqlalchemy import delete, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from identity_socializer.db.dependencies import get_db_session
@@ -73,3 +73,18 @@ class MetricDAO:
             return 0
 
         return int((n_blocked_users / n_users) * 100)
+
+    async def get_ubication_count(self) -> Dict[str, str]:
+        """Get ubication count."""
+        res = {}
+
+        query = select(UserModel.ubication, func.count(UserModel.id))
+        query = query.group_by(UserModel.ubication)
+        query = query.order_by(func.count(UserModel.id).desc())
+
+        statistics = await self.session.execute(query)
+
+        for (ubication, count) in statistics:
+            res[ubication] = count
+
+        return res
