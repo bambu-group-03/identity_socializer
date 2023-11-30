@@ -92,7 +92,7 @@ class MetricDAO:
 
         return res
 
-    async def get_sign_up_rates(self) -> Dict[str, int]:
+    async def get_sign_up_rates(self) -> Dict[str, str]:
         """Get sign up rates."""
         res_success = await self.session.execute(
             select(func.count(LoggerModel.id)).where(
@@ -156,20 +156,25 @@ class MetricDAO:
         )
 
         return {
-            "total_sign_ups": int(total_sign_ups),
-            "sign_up_successful": int(n_sign_up_successful),
-            "sign_up_google": int(n_sign_up_google),
-            "sign_up_error": int(n_sign_up_error),
-            "sign_up_successful_rate": int(sign_up_successful_rate),
-            "sign_up_error_rate": int(sign_up_error_rate),
-            "total_complete_sign_up": int(total_complete_sign_up),
-            "complete_sign_up_successful": int(n_complete_sign_up_successful),
-            "complete_sign_up_error": int(n_complete_sign_up_error),
-            "complete_sign_up_successful_rate": int(complete_sign_up_successful_rate),
-            "complete_sign_up_error_rate": int(complete_sign_up_error_rate),
+            "total_sign_ups": str(total_sign_ups),
+            "sign_up_successful": str(n_sign_up_successful),
+            "sign_up_google": str(n_sign_up_google),
+            "sign_up_error": str(n_sign_up_error),
+            "sign_up_successful_rate": str(round(sign_up_successful_rate, 1)),
+            "sign_up_error_rate": str(round(sign_up_error_rate, 1)),
+            "total_complete_sign_up": str(total_complete_sign_up),
+            "complete_sign_up_successful": str(n_complete_sign_up_successful),
+            "complete_sign_up_error": str(n_complete_sign_up_error),
+            "complete_sign_up_successful_rate": str(
+                round(
+                    complete_sign_up_successful_rate,
+                    1,
+                ),
+            ),
+            "complete_sign_up_error_rate": str(round(complete_sign_up_error_rate, 1)),
         }
 
-    async def get_log_in_rates(self) -> Dict[str, int]:
+    async def get_log_in_rates(self) -> Dict[str, str]:
         """Get log in rates."""
         res_success = await self.session.execute(
             select(func.count(LoggerModel.id)).where(
@@ -203,10 +208,10 @@ class MetricDAO:
         )
 
         return {
-            "total_log_ins": int(total_log_ins),
-            "log_in_successful": int(n_log_in_successful),
-            "log_in_google": int(n_log_in_google),
-            "log_in_error": int(n_log_in_error),
-            "log_in_successful_rate": int(log_in_successful_rate),
-            "log_in_error_rate": int(log_in_error_rate),
+            "total_log_ins": str(total_log_ins),
+            "log_in_successful": str(n_log_in_successful),
+            "log_in_google": str(n_log_in_google),
+            "log_in_error": str(n_log_in_error),
+            "log_in_successful_rate": str(round(log_in_successful_rate, 1)),
+            "log_in_error_rate": str(round(log_in_error_rate, 1)),
         }

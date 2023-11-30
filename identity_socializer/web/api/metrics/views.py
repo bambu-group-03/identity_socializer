@@ -26,7 +26,7 @@ async def get_ubication_count(
 @router.get("/get_sign_up_rates", response_model=None)
 async def get_sign_up_rates(
     metrics_dao: MetricDAO = Depends(),
-) -> Dict[str, int]:
+) -> Dict[str, str]:
     """Get sign up rates."""
     return await metrics_dao.get_sign_up_rates()
 
@@ -34,6 +34,6 @@ async def get_sign_up_rates(
 @router.get("/get_log_in_rates", response_model=None)
 async def get_log_in_rates(
     metrics_dao: MetricDAO = Depends(),
-) -> Dict[str, int]:
+) -> Dict[str, str]:
     """Get log in rates."""
     return await metrics_dao.get_log_in_rates()
