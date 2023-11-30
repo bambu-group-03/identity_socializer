@@ -270,3 +270,34 @@ async def test_getting_admins(
     assert len(admins) == 2
     assert admins[0]["id"] == test_id1
     assert admins[1]["id"] == test_id2
+
+
+@pytest.mark.anyio
+async def test_getting_user_by_username(
+    fastapi_app: FastAPI,
+    client: AsyncClient,
+    dbsession: AsyncSession,
+) -> None:
+    """Tests user by username instance retrieval."""
+    dao = UserDAO(dbsession)
+
+    # Create user
+    test_id1 = uuid.uuid4().hex
+    test_email1 = f"{test_id1}@gmail.com"
+
+    await dao.create_user_model(
+        uid=test_id1,
+        email=test_email1,
+        username="test_username",
+    )
+
+    url = fastapi_app.url_path_for("get_user_by_username", username="test_username")
+    response = await client.get(url)
+
+    user = response.json()
+
+    assert response.status_code == status.HTTP_200_OK
+    assert user is not None
+    assert user["id"] == test_id1
+    assert user["email"] == test_email1
+    assert user["username"] == "test_username"
