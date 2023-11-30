@@ -85,3 +85,37 @@ async def test_update_user(
     assert instance.bio_msg == "bio_msg_test"
     assert instance.profile_photo_id == "profile_photo_id_test"
     assert instance.ubication == "Argentina"
+
+
+@pytest.mark.anyio
+async def test_block_user(
+    fastapi_app: FastAPI,
+    client: AsyncClient,
+    dbsession: AsyncSession,
+) -> None:
+    """Tests block user."""
+    dao = UserDAO(dbsession)
+
+    # Create user
+    test_id = uuid.uuid4().hex
+    test_email = f"{test_id}@gmail.com"
+
+    await dao.create_user_model(
+        uid=test_id,
+        email=test_email,
+    )
+
+    new_user = await dao.get_user_by_id(user_id=test_id)
+
+    assert new_user is not None
+    assert new_user.blocked == False
+
+    # Block user
+    url = fastapi_app.url_path_for("block_user", user_id=new_user.id)
+
+    response = await client.put(url)
+    assert response.status_code == status.HTTP_200_OK
+
+    user = await dao.get_user_by_id(user_id=new_user.id)
+    assert user is not None
+    assert user.blocked == True
