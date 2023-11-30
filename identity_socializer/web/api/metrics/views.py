@@ -19,5 +19,13 @@ async def get_blocked_rate(
 async def get_ubication_count(
     metrics_dao: MetricDAO = Depends(),
 ) -> Dict[str, str]:
-    """Get blocked rate."""
+    """Get ubication count."""
     return await metrics_dao.get_ubication_count()
+
+
+@router.get("/get_sign_up_rates", response_model=None)
+async def get_sign_up_rates(
+    metrics_dao: MetricDAO = Depends(),
+) -> Dict[str, int]:
+    """Get sign up rates."""
+    return await metrics_dao.get_sign_up_rates()

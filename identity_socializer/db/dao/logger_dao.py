@@ -5,7 +5,7 @@ from sqlalchemy import delete, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from identity_socializer.db.dependencies import get_db_session
-from identity_socializer.db.models.logger_model import LoggerModel
+from identity_socializer.db.models.logger_model import LogEvent, LoggerModel
 from identity_socializer.db.models.user_model import UserModel
 from identity_socializer.db.utils import is_valid_uuid
 
@@ -34,7 +34,10 @@ class LoggerDAO:
     async def get_all_logs(self, limit: int, offset: int) -> List[LoggerModel]:
         """Get all logs models with limit/offset pagination."""
         raw_logs = await self.session.execute(
-            select(LoggerModel).limit(limit).offset(offset),
+            select(LoggerModel)
+            .limit(limit)
+            .offset(offset)
+            .order_by(LoggerModel.created_at.desc()),
         )
 
         return list(raw_logs.scalars().fetchall())
@@ -88,3 +91,72 @@ class MetricDAO:
             res[ubication] = count
 
         return res
+
+    async def get_sign_up_rates(self) -> Dict[str, int]:
+        """Get sign up rates."""
+        res_success = await self.session.execute(
+            select(func.count(LoggerModel.id)).where(
+                LoggerModel.event == LogEvent.SIGNUP_SUCCESSFUL.value,
+            ),
+        )
+
+        res_error = await self.session.execute(
+            select(func.count(LoggerModel.id)).where(
+                LoggerModel.event == LogEvent.SIGNUP_ERROR.value,
+            ),
+        )
+
+        res_complete_success = await self.session.execute(
+            select(func.count(LoggerModel.id)).where(
+                LoggerModel.event == LogEvent.COMPLETE_SIGNUP_SUCCESSFUL.value,
+            ),
+        )
+
+        res_complete_error = await self.session.execute(
+            select(func.count(LoggerModel.id)).where(
+                LoggerModel.event == LogEvent.COMPLETE_SIGNUP_ERROR.value,
+            ),
+        )
+
+        n_sign_up_successful = res_success.scalar() or 0
+        n_sign_up_error = res_error.scalar() or 0
+        n_complete_sign_up_successful = res_complete_success.scalar() or 0
+        n_complete_sign_up_error = res_complete_error.scalar() or 0
+
+        total_sign_ups = n_sign_up_successful + n_sign_up_error
+
+        sign_up_successful_rate = (
+            0 if total_sign_ups == 0 else (n_sign_up_successful / total_sign_ups) * 100
+        )
+        sign_up_error_rate = (
+            0 if total_sign_ups == 0 else (n_sign_up_error / total_sign_ups) * 100
+        )
+
+        total_complete_sign_up = (
+            n_complete_sign_up_successful + n_complete_sign_up_error
+        )
+
+        complete_sign_up_successful_rate = (
+            0
+            if total_complete_sign_up == 0
+            else (n_complete_sign_up_successful / total_sign_ups) * 100
+        )
+
+        complete_sign_up_error_rate = (
+            0
+            if total_complete_sign_up == 0
+            else (n_complete_sign_up_error / total_sign_ups) * 100
+        )
+
+        return {
+            "total_sign_ups": int(total_sign_ups),
+            "sign_up_successful": int(n_sign_up_successful),
+            "sign_up_error": int(n_sign_up_error),
+            "sign_up_successful_rate": int(sign_up_successful_rate),
+            "sign_up_error_rate": int(sign_up_error_rate),
+            "total_complete_sign_up": int(total_complete_sign_up),
+            "complete_sign_up_successful": int(n_complete_sign_up_successful),
+            "complete_sign_up_error": int(n_complete_sign_up_error),
+            "complete_sign_up_successful_rate": int(complete_sign_up_successful_rate),
+            "complete_sign_up_error_rate": int(complete_sign_up_error_rate),
+        }
