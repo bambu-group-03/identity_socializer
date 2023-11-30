@@ -156,3 +156,45 @@ async def test_unblock_user(
     user = await dao.get_user_by_id(user_id=new_user.id)
     assert user is not None
     assert user.blocked == False
+
+
+@pytest.mark.anyio
+async def test_getting(
+    fastapi_app: FastAPI,
+    client: AsyncClient,
+    dbsession: AsyncSession,
+) -> None:
+    """Tests users instance retrieval."""
+    dao = UserDAO(dbsession)
+
+    url = fastapi_app.url_path_for("get_user_models")
+    response = await client.get(url)
+    users = response.json()
+
+    assert response.status_code == status.HTTP_200_OK
+    assert not users
+
+    # Create user
+    test_id1 = uuid.uuid4().hex
+    test_email1 = f"{test_id1}@gmail.com"
+
+    await dao.create_user_model(
+        uid=test_id1,
+        email=test_email1,
+    )
+
+    test_id2 = uuid.uuid4().hex
+    test_email2 = f"{test_id2}@gmail.com"
+
+    await dao.create_user_model(
+        uid=test_id2,
+        email=test_email2,
+    )
+
+    response = await client.get(url)
+    users = response.json()
+
+    assert response.status_code == status.HTTP_200_OK
+    assert len(users) == 2
+    assert users[0]["id"] == test_id1
+    assert users[1]["id"] == test_id2
