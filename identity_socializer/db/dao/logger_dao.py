@@ -31,10 +31,10 @@ class LoggerDAO:
 
         self.session.add(logger_entry)
 
-    async def get_all_logs(self) -> List[LoggerModel]:
-        """Get all logs."""
+    async def get_all_logs(self, limit: int, offset: int) -> List[LoggerModel]:
+        """Get all logs models with limit/offset pagination."""
         raw_logs = await self.session.execute(
-            select(LoggerModel),
+            select(LoggerModel).limit(limit).offset(offset),
         )
 
         return list(raw_logs.scalars().fetchall())

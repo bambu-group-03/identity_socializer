@@ -116,10 +116,12 @@ async def complete_signup_error(
 
 @router.get("/get_all_logs", response_model=None)
 async def get_all_logs(
+    limit: int = 10,
+    offset: int = 0,
     logger_dao: LoggerDAO = Depends(),
 ) -> List[LoggerModel]:
     """Get all logs."""
-    return await logger_dao.get_all_logs()
+    return await logger_dao.get_all_logs(limit=limit, offset=offset)
 
 
 @router.delete("/delete_log/{log_id}", response_model=None)
