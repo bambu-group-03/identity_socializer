@@ -301,3 +301,35 @@ async def test_getting_user_by_username(
     assert user["id"] == test_id1
     assert user["email"] == test_email1
     assert user["username"] == "test_username"
+
+
+@pytest.mark.anyio
+async def test_getting_user_for_admin(
+    fastapi_app: FastAPI,
+    client: AsyncClient,
+    dbsession: AsyncSession,
+) -> None:
+    """Tests getting AppUserModel for admin."""
+    dao = UserDAO(dbsession)
+
+    # Create user
+    test_id1 = uuid.uuid4().hex
+    test_email1 = f"{test_id1}@gmail.com"
+
+    await dao.create_user_model(
+        uid=test_id1,
+        email=test_email1,
+        username="test_username",
+    )
+
+    url = fastapi_app.url_path_for("admin_get_user_model", user_id=test_id1)
+    response = await client.get(url)
+
+    user = response.json()
+
+    assert response.status_code == status.HTTP_200_OK
+    assert user is not None
+    assert user["id"] == test_id1
+    assert user["username"] == "test_username"
+    assert user["blocked"] == False
+    assert user["is_followed"] == False
