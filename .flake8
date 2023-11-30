@@ -6,6 +6,7 @@ extend-ignore = E203
 docstring_style=sphinx
 
 ignore =
+  S105,
   WPS218,
   E712,
   WPS235,
