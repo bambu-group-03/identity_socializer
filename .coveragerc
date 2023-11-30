@@ -1,0 +1,8 @@
+[report]
+omit =
+    **/__main__.py
+    **/__init__.py
+    setup.py
+    **/cli.py
+    **/constants.py
+    tests/conftest.py
