@@ -29,3 +29,11 @@ async def get_sign_up_rates(
 ) -> Dict[str, int]:
     """Get sign up rates."""
     return await metrics_dao.get_sign_up_rates()
+
+
+@router.get("/get_log_in_rates", response_model=None)
+async def get_log_in_rates(
+    metrics_dao: MetricDAO = Depends(),
+) -> Dict[str, int]:
+    """Get log in rates."""
+    return await metrics_dao.get_log_in_rates()

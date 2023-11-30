@@ -160,3 +160,37 @@ class MetricDAO:
             "complete_sign_up_successful_rate": int(complete_sign_up_successful_rate),
             "complete_sign_up_error_rate": int(complete_sign_up_error_rate),
         }
+
+    async def get_log_in_rates(self) -> Dict[str, int]:
+        """Get log in rates."""
+        res_success = await self.session.execute(
+            select(func.count(LoggerModel.id)).where(
+                LoggerModel.event == LogEvent.LOGIN_SUCCESSFUL.value,
+            ),
+        )
+
+        res_error = await self.session.execute(
+            select(func.count(LoggerModel.id)).where(
+                LoggerModel.event == LogEvent.LOGIN_ERROR.value,
+            ),
+        )
+
+        n_log_in_successful = res_success.scalar() or 0
+        n_log_in_error = res_error.scalar() or 0
+
+        total_log_ins = n_log_in_successful + n_log_in_error
+
+        log_in_successful_rate = (
+            0 if total_log_ins == 0 else (n_log_in_successful / total_log_ins) * 100
+        )
+        log_in_error_rate = (
+            0 if total_log_ins == 0 else (n_log_in_error / total_log_ins) * 100
+        )
+
+        return {
+            "total_log_ins": int(total_log_ins),
+            "log_in_successful": int(n_log_in_successful),
+            "log_in_error": int(n_log_in_error),
+            "log_in_successful_rate": int(log_in_successful_rate),
+            "log_in_error_rate": int(log_in_error_rate),
+        }
