@@ -1,7 +1,6 @@
 from typing import List, Optional
 
-from fastapi import APIRouter, Depends, HTTPException
-from firebase_admin import auth
+from fastapi import APIRouter, Depends
 
 from identity_socializer.db.dao.admin_dao import AdminDAO
 from identity_socializer.db.dao.relationship_dao import RelationshipDAO
@@ -11,36 +10,12 @@ from identity_socializer.db.models.user_model import UserModel
 from identity_socializer.web.api.auth.schema import (
     AdminDTO,
     AppUserModel,
-    SecurityToken,
     SimpleUserModelDTO,
-    Success,
     UserModelDTO,
 )
 from identity_socializer.web.api.utils import complete_user
 
 router = APIRouter()
-
-
-@router.post("/signup", response_model=Success)
-async def signup(
-    incoming_message: SecurityToken,
-) -> Success:
-    """
-    Sign up a user.
-
-    :param incoming_message: Incoming message.
-    :raises HTTPException: If something goes wrong.
-    :return: Success message.
-    """
-    ret = Success(msg="Success")
-
-    # todo: explorar cada caso de verify_id_token
-    try:
-        auth.verify_id_token(incoming_message.token)
-        return ret
-    except Exception as error:
-        code = 500
-        raise HTTPException(status_code=code, detail=str(error))
 
 
 @router.post("/register", response_model=None)
