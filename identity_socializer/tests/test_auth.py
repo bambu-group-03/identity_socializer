@@ -160,7 +160,7 @@ async def test_unblock_user(
 
 
 @pytest.mark.anyio
-async def test_getting(
+async def test_getting_users(
     fastapi_app: FastAPI,
     client: AsyncClient,
     dbsession: AsyncSession,
@@ -228,3 +228,45 @@ async def test_create_admin(
     assert len(instances) == 1
     assert instances[0].id == test_id
     assert instances[0].email == test_email
+
+
+@pytest.mark.anyio
+async def test_getting_admins(
+    fastapi_app: FastAPI,
+    client: AsyncClient,
+    dbsession: AsyncSession,
+) -> None:
+    """Tests admins instance retrieval."""
+    dao = AdminDAO(dbsession)
+
+    url = fastapi_app.url_path_for("get_admin_models")
+    response = await client.get(url)
+    admins = response.json()
+
+    assert response.status_code == status.HTTP_200_OK
+    assert not admins
+
+    # Create admins
+    test_id1 = uuid.uuid4().hex
+    test_email1 = f"{test_id1}@gmail.com"
+
+    await dao.create_admin_model(
+        admin_id=test_id1,
+        email=test_email1,
+    )
+
+    test_id2 = uuid.uuid4().hex
+    test_email2 = f"{test_id2}@gmail.com"
+
+    await dao.create_admin_model(
+        admin_id=test_id2,
+        email=test_email2,
+    )
+
+    response = await client.get(url)
+    admins = response.json()
+
+    assert response.status_code == status.HTTP_200_OK
+    assert len(admins) == 2
+    assert admins[0]["id"] == test_id1
+    assert admins[1]["id"] == test_id2
