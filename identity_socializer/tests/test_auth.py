@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
 from identity_socializer.db.dao.admin_dao import AdminDAO
+from identity_socializer.db.dao.relationship_dao import RelationshipDAO
 from identity_socializer.db.dao.user_dao import UserDAO
 
 
@@ -333,3 +334,53 @@ async def test_getting_user_for_admin(
     assert user["username"] == "test_username"
     assert user["blocked"] == False
     assert user["is_followed"] == False
+
+
+@pytest.mark.anyio
+async def test_getting_user_for_user(
+    fastapi_app: FastAPI,
+    client: AsyncClient,
+    dbsession: AsyncSession,
+) -> None:
+    """Tests getting AppUserModel for user."""
+    dao = UserDAO(dbsession)
+    interaction_dao = RelationshipDAO(dbsession)
+
+    # Create user 1
+    test_id1 = uuid.uuid4().hex
+    test_email1 = f"{test_id1}@gmail.com"
+
+    await dao.create_user_model(
+        uid=test_id1,
+        email=test_email1,
+        username="test_username_1",
+    )
+
+    # Create user 2
+    test_id2 = uuid.uuid4().hex
+    test_email2 = f"{test_id2}@gmail.com"
+
+    await dao.create_user_model(
+        uid=test_id2,
+        email=test_email2,
+        username="test_username_2",
+    )
+
+    # User 1 follows user 2
+    await interaction_dao.create_relationship_model(test_id1, test_id2)
+
+    url = fastapi_app.url_path_for(
+        "get_user_model",
+        current_user_id=test_id1,
+        user_id=test_id2,
+    )
+    response = await client.get(url)
+
+    user = response.json()
+
+    assert response.status_code == status.HTTP_200_OK
+    assert user is not None
+    assert user["id"] == test_id2
+    assert user["username"] == "test_username_2"
+    assert user["blocked"] == False
+    assert user["is_followed"] == True
