@@ -6,6 +6,7 @@ from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
+from identity_socializer.db.dao.admin_dao import AdminDAO
 from identity_socializer.db.dao.user_dao import UserDAO
 
 
@@ -198,3 +199,32 @@ async def test_getting(
     assert len(users) == 2
     assert users[0]["id"] == test_id1
     assert users[1]["id"] == test_id2
+
+
+@pytest.mark.anyio
+async def test_create_admin(
+    fastapi_app: FastAPI,
+    client: AsyncClient,
+    dbsession: AsyncSession,
+) -> None:
+    """Tests admin model instance creation."""
+    url = fastapi_app.url_path_for("create_admin")
+
+    test_id = uuid.uuid4().hex
+    test_email = f"{test_id}@gmail.com"
+
+    response = await client.post(
+        url,
+        json={
+            "id": test_id,
+            "email": test_email,
+        },
+    )
+
+    assert response.status_code == status.HTTP_200_OK
+    dao = AdminDAO(dbsession)
+    instances = await dao.get_all_admins(limit=10, offset=0)
+
+    assert len(instances) == 1
+    assert instances[0].id == test_id
+    assert instances[0].email == test_email
