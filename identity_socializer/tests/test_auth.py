@@ -119,3 +119,40 @@ async def test_block_user(
     user = await dao.get_user_by_id(user_id=new_user.id)
     assert user is not None
     assert user.blocked == True
+
+
+@pytest.mark.anyio
+async def test_unblock_user(
+    fastapi_app: FastAPI,
+    client: AsyncClient,
+    dbsession: AsyncSession,
+) -> None:
+    """Tests unblock user."""
+    dao = UserDAO(dbsession)
+
+    # Create user
+    test_id = uuid.uuid4().hex
+    test_email = f"{test_id}@gmail.com"
+
+    await dao.create_user_model(
+        uid=test_id,
+        email=test_email,
+    )
+
+    # Block user
+    await dao.block_user(test_id)
+
+    new_user = await dao.get_user_by_id(user_id=test_id)
+
+    assert new_user is not None
+    assert new_user.blocked == True
+
+    # Unblock user
+    url = fastapi_app.url_path_for("unblock_user", user_id=new_user.id)
+
+    response = await client.put(url)
+    assert response.status_code == status.HTTP_200_OK
+
+    user = await dao.get_user_by_id(user_id=new_user.id)
+    assert user is not None
+    assert user.blocked == False
