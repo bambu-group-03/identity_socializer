@@ -114,6 +114,36 @@ async def complete_signup_error(
     )
 
 
+@router.post("/login_google")
+async def login_google(
+    logger_entry: LoggerEntry,
+    logger_dao: LoggerDAO = Depends(),
+) -> None:
+    """Log in successful with Google."""
+    event = LogEvent.LOGIN_GOOGLE
+
+    await logger_dao.create_logger_model(
+        event=event.value,
+        message=logger_entry.message,
+        email=logger_entry.email,
+    )
+
+
+@router.post("/signup_google")
+async def signup_google(
+    logger_entry: LoggerEntry,
+    logger_dao: LoggerDAO = Depends(),
+) -> None:
+    """Sign up successful with Google."""
+    event = LogEvent.SIGNUP_GOOGLE
+
+    await logger_dao.create_logger_model(
+        event=event.value,
+        message=logger_entry.message,
+        email=logger_entry.email,
+    )
+
+
 @router.get("/get_all_logs", response_model=None)
 async def get_all_logs(
     limit: int = 10,

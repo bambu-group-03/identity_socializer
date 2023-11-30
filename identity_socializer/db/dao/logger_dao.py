@@ -100,6 +100,12 @@ class MetricDAO:
             ),
         )
 
+        res_google = await self.session.execute(
+            select(func.count(LoggerModel.id)).where(
+                LoggerModel.event == LogEvent.SIGNUP_GOOGLE.value,
+            ),
+        )
+
         res_error = await self.session.execute(
             select(func.count(LoggerModel.id)).where(
                 LoggerModel.event == LogEvent.SIGNUP_ERROR.value,
@@ -122,6 +128,7 @@ class MetricDAO:
         n_sign_up_error = res_error.scalar() or 0
         n_complete_sign_up_successful = res_complete_success.scalar() or 0
         n_complete_sign_up_error = res_complete_error.scalar() or 0
+        n_sign_up_google = res_google.scalar() or 0
 
         total_sign_ups = n_sign_up_successful + n_sign_up_error
 
@@ -139,18 +146,19 @@ class MetricDAO:
         complete_sign_up_successful_rate = (
             0
             if total_complete_sign_up == 0
-            else (n_complete_sign_up_successful / total_sign_ups) * 100
+            else (n_complete_sign_up_successful / total_complete_sign_up) * 100
         )
 
         complete_sign_up_error_rate = (
             0
             if total_complete_sign_up == 0
-            else (n_complete_sign_up_error / total_sign_ups) * 100
+            else (n_complete_sign_up_error / total_complete_sign_up) * 100
         )
 
         return {
             "total_sign_ups": int(total_sign_ups),
             "sign_up_successful": int(n_sign_up_successful),
+            "sign_up_google": int(n_sign_up_google),
             "sign_up_error": int(n_sign_up_error),
             "sign_up_successful_rate": int(sign_up_successful_rate),
             "sign_up_error_rate": int(sign_up_error_rate),
@@ -169,6 +177,12 @@ class MetricDAO:
             ),
         )
 
+        res_google = await self.session.execute(
+            select(func.count(LoggerModel.id)).where(
+                LoggerModel.event == LogEvent.LOGIN_GOOGLE.value,
+            ),
+        )
+
         res_error = await self.session.execute(
             select(func.count(LoggerModel.id)).where(
                 LoggerModel.event == LogEvent.LOGIN_ERROR.value,
@@ -176,6 +190,7 @@ class MetricDAO:
         )
 
         n_log_in_successful = res_success.scalar() or 0
+        n_log_in_google = res_google.scalar() or 0
         n_log_in_error = res_error.scalar() or 0
 
         total_log_ins = n_log_in_successful + n_log_in_error
@@ -190,6 +205,7 @@ class MetricDAO:
         return {
             "total_log_ins": int(total_log_ins),
             "log_in_successful": int(n_log_in_successful),
+            "log_in_google": int(n_log_in_google),
             "log_in_error": int(n_log_in_error),
             "log_in_successful_rate": int(log_in_successful_rate),
             "log_in_error_rate": int(log_in_error_rate),
