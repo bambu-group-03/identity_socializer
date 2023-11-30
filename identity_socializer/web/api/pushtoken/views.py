@@ -7,7 +7,7 @@ router = APIRouter()
 
 
 @router.post("/register", response_model=None)
-async def register(
+async def push_token_register(
     body: PushTokenEntry,
     push_token_dao: PushTokenDAO = Depends(),
 ) -> None:
