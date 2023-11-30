@@ -57,25 +57,27 @@ class MetricDAO:
     def __init__(self, session: AsyncSession = Depends(get_db_session)):
         self.session = session
 
-    async def get_blocked_rate(self) -> int:
+    async def get_user_rates(self) -> Dict[str, str]:
         """Get blocked rate."""
-        # count all users
-        users = await self.session.execute(select(UserModel))
-        n_users = len(list(users.scalars().fetchall()))
+        res_users = await self.session.execute(select(func.count(UserModel.id)))
 
-        if n_users == 0:
-            return 0
-
-        # count all blocked users
-        count_blocked_users = await self.session.execute(
-            select(UserModel).where(UserModel.blocked == True),
+        res_blocked = await self.session.execute(
+            select(func.count(UserModel.id)).where(UserModel.blocked == True),
         )
-        n_blocked_users = len(list(count_blocked_users.scalars().fetchall()))
 
-        if n_blocked_users == 0:
-            return 0
+        n_users = res_users.scalar() or 0
+        n_blocked_users = res_blocked.scalar() or 0
 
-        return int((n_blocked_users / n_users) * 100)
+        blocked_user_rate = 0 if n_users == 0 else (n_blocked_users / n_users) * 100
+        non_blocked_user_rate = 100 - blocked_user_rate
+
+        return {
+            "total_users": str(n_users),
+            "blocked_users": str(n_blocked_users),
+            "non_blocked_users": str(round(n_users - n_blocked_users, 1)),
+            "blocked_users_rate": str(round(blocked_user_rate, 1)),
+            "non_blocked_users_rate": str(round(non_blocked_user_rate, 1)),
+        }
 
     async def get_ubication_count(self) -> Dict[str, str]:
         """Get ubication count."""

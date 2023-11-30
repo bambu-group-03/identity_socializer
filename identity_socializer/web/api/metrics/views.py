@@ -7,12 +7,12 @@ from identity_socializer.db.dao.logger_dao import MetricDAO
 router = APIRouter()
 
 
-@router.get("/get_blocked_rate", response_model=None)
-async def get_blocked_rate(
+@router.get("/get_user_rates", response_model=None)
+async def get_user_rates(
     metrics_dao: MetricDAO = Depends(),
-) -> int:
-    """Get blocked rate."""
-    return await metrics_dao.get_blocked_rate()
+) -> Dict[str, str]:
+    """Get user rates."""
+    return await metrics_dao.get_user_rates()
 
 
 @router.get("/get_ubication_count", response_model=None)
