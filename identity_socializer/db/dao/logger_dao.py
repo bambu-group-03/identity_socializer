@@ -79,9 +79,9 @@ class MetricDAO:
             "non_blocked_users_rate": str(round(non_blocked_user_rate, 1)),
         }
 
-    async def get_ubication_count(self) -> Dict[str, str]:
+    async def get_ubication_count(self) -> List[Dict[str, str]]:
         """Get ubication count."""
-        res = {}
+        res = []
 
         query = select(UserModel.ubication, func.count(UserModel.id))
         query = query.group_by(UserModel.ubication)
@@ -90,7 +90,7 @@ class MetricDAO:
         statistics = await self.session.execute(query)
 
         for (ubication, count) in statistics:
-            res[ubication] = count
+            res.append({"name": ubication, "value": count})
 
         return res
 

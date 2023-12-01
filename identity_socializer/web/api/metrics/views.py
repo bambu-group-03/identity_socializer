@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, List
 
 from fastapi import APIRouter, Depends
 
@@ -18,7 +18,7 @@ async def get_user_rates(
 @router.get("/get_ubication_count", response_model=None)
 async def get_ubication_count(
     metrics_dao: MetricDAO = Depends(),
-) -> Dict[str, str]:
+) -> List[Dict[str, str]]:
     """Get ubication count."""
     return await metrics_dao.get_ubication_count()
 
