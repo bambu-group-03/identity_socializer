@@ -37,6 +37,7 @@ class AppUserModel(BaseModel):
     """Message model for user register."""
 
     id: str
+    email: Optional[str]
     first_name: Optional[str]
     last_name: Optional[str]
     username: Optional[str]
