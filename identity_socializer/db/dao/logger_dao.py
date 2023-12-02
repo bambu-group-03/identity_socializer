@@ -57,6 +57,23 @@ class MetricDAO:
     def __init__(self, session: AsyncSession = Depends(get_db_session)):
         self.session = session
 
+    async def get_new_users_by_month(self) -> List[Dict[str, str]]:
+        """Get new users by month."""
+        res = []
+
+        query = select(
+            func.extract("month", UserModel.created_at),
+            func.count(UserModel.id),
+        )
+        query = query.group_by(func.extract("month", UserModel.created_at))
+        query = query.order_by(func.extract("month", UserModel.created_at).asc())
+
+        statistics = await self.session.execute(query)
+        for (month, count) in statistics:
+            res.append({"month": _get_month_by_number(month), "value": count})
+
+        return res
+
     async def get_user_rates(self) -> Dict[str, str]:
         """Get blocked rate."""
         res_users = await self.session.execute(select(func.count(UserModel.id)))
@@ -225,3 +242,19 @@ class MetricDAO:
             "log_in_error_rate": str(round(log_in_error_rate, 1)),
             "reset_password": str(n_reset_password),
         }
+
+
+def _get_month_by_number(month: int) -> str:
+    """Get month name by number."""
+    if month == 8:
+        return "August-2023"
+    elif month == 9:
+        return "September-2023"
+    elif month == 10:
+        return "October-2023"
+    elif month == 11:
+        return "November-2023"
+    elif month == 12:
+        return "December-2023"
+
+    return "unkwnown"

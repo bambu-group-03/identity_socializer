@@ -7,6 +7,14 @@ from identity_socializer.db.dao.logger_dao import MetricDAO
 router = APIRouter()
 
 
+@router.get("/get_new_users_by_month", response_model=None)
+async def get_new_users_by_month(
+    metrics_dao: MetricDAO = Depends(),
+) -> List[Dict[str, str]]:
+    """Get new users by month."""
+    return await metrics_dao.get_new_users_by_month()
+
+
 @router.get("/get_user_rates", response_model=None)
 async def get_user_rates(
     metrics_dao: MetricDAO = Depends(),
