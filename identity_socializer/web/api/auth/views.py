@@ -66,7 +66,7 @@ async def unblock_user(
     await user_dao.unblock_user(user_id)
 
 
-@router.get("/users", response_model=List[UserModelDTO])
+@router.get("/users", response_model=None)
 async def get_user_models(
     limit: int = 10,
     offset: int = 0,
