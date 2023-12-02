@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Any, Dict, List
 
 from fastapi import APIRouter, Depends
 
@@ -7,12 +7,12 @@ from identity_socializer.db.dao.logger_dao import MetricDAO
 router = APIRouter()
 
 
-@router.get("/get_new_users_by_month", response_model=None)
-async def get_new_users_by_month(
+@router.get("/get_user_by_month_count", response_model=None)
+async def get_user_by_month_count(
     metrics_dao: MetricDAO = Depends(),
-) -> List[Dict[str, str]]:
+) -> Any:
     """Get new users by month."""
-    return await metrics_dao.get_new_users_by_month()
+    return await metrics_dao.get_user_by_month_count()
 
 
 @router.get("/get_user_rates", response_model=None)

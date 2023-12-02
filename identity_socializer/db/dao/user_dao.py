@@ -1,3 +1,4 @@
+import datetime
 from typing import List, Optional
 
 from fastapi import Depends
@@ -165,3 +166,20 @@ class UserDAO:
         query = select(UserModel.username).where(UserModel.id == user_id)
         rows = await self.session.execute(query)
         return rows.scalars().first()
+
+    async def count_new_users_between_dates(
+        self,
+        start_date_str: str,
+        end_date_str: str,
+    ) -> int:
+        """Get new users between dates."""
+        start_date = datetime.datetime.strptime(start_date_str, "%Y-%m-%d")
+        end_date = datetime.datetime.strptime(end_date_str, "%Y-%m-%d")
+
+        query = select(func.count(UserModel.id))
+        query = query.where(UserModel.created_at >= start_date)
+        query = query.where(UserModel.created_at <= end_date)
+
+        rows = await self.session.execute(query)
+
+        return rows.scalar() or 0

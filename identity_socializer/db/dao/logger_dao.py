@@ -1,9 +1,10 @@
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from fastapi import Depends
 from sqlalchemy import delete, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from identity_socializer.db.dao.user_dao import UserDAO
 from identity_socializer.db.dependencies import get_db_session
 from identity_socializer.db.models.logger_model import LogEvent, LoggerModel
 from identity_socializer.db.models.user_model import UserModel
@@ -57,22 +58,47 @@ class MetricDAO:
     def __init__(self, session: AsyncSession = Depends(get_db_session)):
         self.session = session
 
-    async def get_new_users_by_month(self) -> List[Dict[str, str]]:
+    async def get_user_by_month_count(self) -> Any:
         """Get new users by month."""
-        res = []
+        user_dao = UserDAO(self.session)
 
-        query = select(
-            func.extract("month", UserModel.created_at),
-            func.count(UserModel.id),
-        )
-        query = query.group_by(func.extract("month", UserModel.created_at))
-        query = query.order_by(func.extract("month", UserModel.created_at).asc())
-
-        statistics = await self.session.execute(query)
-        for (month, count) in statistics:
-            res.append({"month": _get_month_by_number(month), "value": count})
-
-        return res
+        return [
+            {
+                "month": "August-2023",
+                "value": await user_dao.count_new_users_between_dates(
+                    "2023-08-01",
+                    "2023-08-31",
+                ),
+            },
+            {
+                "month": "September-2023",
+                "value": await user_dao.count_new_users_between_dates(
+                    "2023-09-01",
+                    "2023-09-30",
+                ),
+            },
+            {
+                "month": "October-2023",
+                "value": await user_dao.count_new_users_between_dates(
+                    "2023-10-01",
+                    "2023-10-31",
+                ),
+            },
+            {
+                "month": "November-2023",
+                "value": await user_dao.count_new_users_between_dates(
+                    "2023-11-01",
+                    "2023-11-30",
+                ),
+            },
+            {
+                "month": "December-2023",
+                "value": await user_dao.count_new_users_between_dates(
+                    "2023-12-01",
+                    "2023-12-31",
+                ),
+            },
+        ]
 
     async def get_user_rates(self) -> Dict[str, str]:
         """Get blocked rate."""
@@ -246,11 +272,7 @@ class MetricDAO:
 
 def _get_month_by_number(month: int) -> str:
     """Get month name by number."""
-    if month == 8:
-        return "August-2023"
-    elif month == 9:
-        return "September-2023"
-    elif month == 10:
+    if month == 10:
         return "October-2023"
     elif month == 11:
         return "November-2023"
