@@ -15,10 +15,13 @@ class PushNotifications:
 
     def send(self, notification: Any) -> None:
         """Send push notification to user."""
-        httpx.post(
-            "https://exp.host/--/api/v2/push/send",
-            json=notification,
-        )
+        try:
+            httpx.post(
+                "https://exp.host/--/api/v2/push/send",
+                json=notification,
+            )
+        except Exception as e:
+            print(e)
 
     def save_notification(self, user_id: str, title: str, content: str) -> None:
         """Save notification to database."""
@@ -55,9 +58,8 @@ class PushNotifications:
         for push_token in push_tokens:
 
             data = {
-                "LikeNotification": {
-                    "snap": snap,
-                },
+                "screen": "LikeNotification",
+                "params": snap,
             }
 
             notification = _create_push_notification(push_token, title, body, data)
@@ -89,9 +91,8 @@ class PushNotifications:
         for push_token in push_tokens:
 
             data = {
-                "NewFollowerNotification": {
-                    "user": user,
-                },
+                "screen": "NewFollowerNotification",
+                "params": user,
             }
 
             notification = _create_push_notification(push_token, title, body, data)
@@ -125,9 +126,8 @@ class PushNotifications:
         for push_token in push_tokens:
 
             data = {
-                "NewMentionNotification": {
-                    "snap": snap,
-                },
+                "screen": "NewMentionNotification",
+                "params": snap,
             }
 
             notification = _create_push_notification(push_token, title, body, data)
@@ -165,10 +165,8 @@ class PushNotifications:
         for push_token in push_tokens:
 
             data = {
-                "NewMessageNotification": {
-                    "chat": chat,
-                    "user": user,
-                },
+                "screen": "NewMessageNotification",
+                "params": {chat, user},
             }
 
             notification = _create_push_notification(push_token, title, body, data)
