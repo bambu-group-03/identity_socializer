@@ -22,7 +22,6 @@ class PushNotifications:
                 json=notification,
             )
         except Exception as e:
-            print(f"FAIL TO SEND PUSH NOTIFICATION: {notification}")
             print(e)
 
     def save_notification(self, user_id: str, title: str, content: str) -> None:
@@ -188,7 +187,7 @@ def _create_push_notification(push_token: str, title: str, body: str, data: Any)
 
 def _get_snap(snap_id: str, user_id: str) -> Any:
     """Get snap from content discovery."""
-    url = "https://api-content-discovery-luiscusihuaman.cloud.okteto.net"
+    url = "https://content-discovery-content-discovery-luiscusihuaman.cloud.okteto.net"
 
     res = httpx.get(
         f"{url}/api/feed/snap/{snap_id}?user_id={user_id}",
