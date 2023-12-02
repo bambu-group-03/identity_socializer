@@ -191,9 +191,11 @@ def _get_snap(snap_id: str, user_id: str) -> Any:
     url = "https://api-content-discovery-luiscusihuaman.cloud.okteto.net"
     print(f"snap_id: {snap_id} user_id: {user_id}")
     try:
+        timeout = httpx.Timeout(10.0, read=None)
         res = httpx.get(
             f"{url}/api/feed/snap/{snap_id}?user_id={user_id}",
-        headers={'accept': 'application/json'})
+            verify=False, timeout=timeout,
+            headers={'accept': 'application/json'})
         if res.status_code != 200:
             return None
     except Exception as e:
