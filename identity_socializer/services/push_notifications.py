@@ -15,13 +15,14 @@ class PushNotifications:
 
     def send(self, notification: Any) -> None:
         """Send push notification to user."""
+        print(f"Sending push notification: {notification}")
         try:
-            print(f"Sending push notification: {notification}")
             httpx.post(
                 "https://exp.host/--/api/v2/push/send",
                 json=notification,
             )
         except Exception as e:
+            print(f"FAIL TO SEND PUSH NOTIFICATION: {notification}")
             print(e)
 
     def save_notification(self, user_id: str, title: str, content: str) -> None:
