@@ -193,7 +193,7 @@ def _get_snap(snap_id: str, user_id: str) -> Any:
     try:
         res = httpx.get(
             f"{url}/api/feed/snap/{snap_id}?user_id={user_id}",
-        )
+        headers={'accept': 'application/json'})
         if res.status_code != 200:
             return None
     except Exception as e:
