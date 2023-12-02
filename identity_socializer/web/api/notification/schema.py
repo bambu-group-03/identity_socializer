@@ -1,12 +1,14 @@
+from typing import Optional
+
 from pydantic import BaseModel, ConfigDict
 
 
 class NotificationDTO(BaseModel):
-    """DTO for chat message."""
+    """DTO for notification message."""
 
-    user_id: str
-    title: str
-    content: str
+    from_id: str
+    to_id: str
+    snap_id: Optional[str]
 
     model_config = ConfigDict(from_attributes=True)
 

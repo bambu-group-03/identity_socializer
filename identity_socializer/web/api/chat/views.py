@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from mongoengine import connect
 
 from identity_socializer.db.collections.chats import get_chat, get_chats_by_user_id
@@ -8,6 +8,10 @@ from identity_socializer.db.collections.messages import (
     create_message_in_chat,
     get_messages_by_chat_id,
 )
+from identity_socializer.db.dao.push_token_dao import PushTokenDAO
+from identity_socializer.db.dao.relationship_dao import RelationshipDAO
+from identity_socializer.db.dao.user_dao import UserDAO
+from identity_socializer.services.push_notifications import PushNotifications
 from identity_socializer.settings import settings
 from identity_socializer.web.api.chat.schema import ChatDTO, MessageDTO, MessageSchema
 
@@ -22,8 +26,12 @@ connect(
 
 
 @router.post("/send_message", response_model=None)
-def send_message(
+async def send_message(
     body: MessageDTO,
+    user_dao: UserDAO = Depends(),
+    relationship_dao: RelationshipDAO = Depends(),
+    push_token_dao: PushTokenDAO = Depends(),
+    push_notifications: PushNotifications = Depends(),
 ) -> MessageSchema:
     """
     Creates a message with the given body.
@@ -51,6 +59,16 @@ def send_message(
             from_id=body.from_id,
             to_id=body.to_id,
             content=body.content,
+        )
+
+        # Notify the receiver
+        await push_notifications.new_message(
+            from_id=body.from_id,
+            to_id=body.to_id,
+            chat_to_id=chat_to_id,
+            user_dao=user_dao,
+            relationship_dao=relationship_dao,
+            push_token_dao=push_token_dao,
         )
 
         return MessageSchema(

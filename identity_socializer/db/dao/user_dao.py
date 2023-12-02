@@ -159,3 +159,9 @@ class UserDAO:
 
         rows = await self.session.execute(query)
         return rows.scalars().first()
+
+    async def get_username_by_id(self, user_id: str) -> Optional[str]:
+        """Get specific user model."""
+        query = select(UserModel.username).where(UserModel.id == user_id)
+        rows = await self.session.execute(query)
+        return rows.scalars().first()

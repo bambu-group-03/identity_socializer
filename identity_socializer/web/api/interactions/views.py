@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from identity_socializer.db.dao.push_token_dao import PushTokenDAO
 from identity_socializer.db.dao.relationship_dao import RelationshipDAO
+from identity_socializer.db.dao.user_dao import UserDAO
 from identity_socializer.services.push_notifications import PushNotifications
 from identity_socializer.web.api.auth.schema import AppUserModel
 from identity_socializer.web.api.utils import complete_users
@@ -13,10 +14,11 @@ router = APIRouter()
 push_notifications = PushNotifications()
 
 
-@router.post("/{user_id}/follow/{followed_user_id}", response_model=None)
+@router.post("/{from_id}/follow/{followed_user_id}", response_model=None)
 async def follow_user(
-    user_id: str,
-    followed_user_id: str,
+    from_id: str,
+    to_id: str,
+    user_dao: UserDAO = Depends(),
     relationship_dao: RelationshipDAO = Depends(),
     push_token_dao: PushTokenDAO = Depends(),
 ) -> None:
@@ -26,21 +28,27 @@ async def follow_user(
     If user_id or followed_user_id does not exist, the relationship will not be created.
     """
     relationship = await relationship_dao.create_relationship_model(
-        user_id,
-        followed_user_id,
+        from_id,
+        to_id,
     )
 
     if relationship is None:
         return
 
     # Notify the followed user
-    await push_notifications.new_follower(followed_user_id, push_token_dao)
+    await push_notifications.new_follower(
+        from_id,
+        to_id,
+        user_dao,
+        relationship_dao,
+        push_token_dao,
+    )
 
 
-@router.delete("/{user_id}/unfollow/{followed_user_id}", response_model=None)
+@router.delete("/{from_id}/unfollow/{to_id}", response_model=None)
 async def unfollow_user(
-    user_id: str,
-    followed_user_id: str,
+    from_id: str,
+    to_id: str,
     relationship_dao: RelationshipDAO = Depends(),
 ) -> None:
     """
@@ -50,7 +58,7 @@ async def unfollow_user(
     If the relationship between user_id and followed_user_id does not exist,
     anything will happen.
     """
-    await relationship_dao.delete_relationship_model(user_id, followed_user_id)
+    await relationship_dao.delete_relationship_model(from_id, to_id)
 
 
 @router.get("/{user_id}/mutuals_with/{another_id}")

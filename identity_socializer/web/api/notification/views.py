@@ -1,12 +1,12 @@
 from typing import List
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from mongoengine import connect
 
-from identity_socializer.db.collections.notifications import (
-    create_notification,
-    get_messages_by_user_id,
-)
+from identity_socializer.db.collections.notifications import get_messages_by_user_id
+from identity_socializer.db.dao.push_token_dao import PushTokenDAO
+from identity_socializer.db.dao.user_dao import UserDAO
+from identity_socializer.services.push_notifications import PushNotifications
 from identity_socializer.settings import settings
 from identity_socializer.web.api.notification.schema import (
     NotificationDTO,
@@ -23,33 +23,38 @@ connect(
 )
 
 
-@router.post("/", response_model=None)
-def new_notification(
+@router.post("/new_like", response_model=None)
+async def new_like_notification(
     body: NotificationDTO,
-) -> NotificationSchema:
-    """
-    Creates a notification with the given body.
+    user_dao: UserDAO = Depends(),
+    push_token_dao: PushTokenDAO = Depends(),
+    push_notifications: PushNotifications = Depends(),
+) -> None:
+    """Creates a notification for new like event."""
+    await push_notifications.new_like(
+        body.from_id,
+        body.to_id,
+        body.snap_id or "unknown",
+        user_dao,
+        push_token_dao,
+    )
 
-    :raises HTTPException: If something goes wrong.
-    """
-    try:
-        notification = create_notification(
-            user_id=body.user_id,
-            title=body.title,
-            content=body.content,
-        )
 
-        return NotificationSchema(
-            id=str(notification.id),
-            user_id=notification.user_id,
-            title=notification.title,
-            content=notification.content,
-            created_at=str(notification.created_at),
-        )
-
-    except Exception as error:
-        code = status.HTTP_400_BAD_REQUEST
-        raise HTTPException(status_code=code, detail=str(error))
+@router.post("/new_mention", response_model=None)
+async def new_mention_notification(
+    body: NotificationDTO,
+    user_dao: UserDAO = Depends(),
+    push_token_dao: PushTokenDAO = Depends(),
+    push_notifications: PushNotifications = Depends(),
+) -> None:
+    """Creates a notification for new mention event."""
+    await push_notifications.new_mention(
+        body.from_id,
+        body.to_id,
+        body.snap_id or "unknown",
+        user_dao,
+        push_token_dao,
+    )
 
 
 @router.get("/{user_id}", response_model=None)
