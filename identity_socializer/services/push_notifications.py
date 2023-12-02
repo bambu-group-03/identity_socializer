@@ -16,7 +16,7 @@ class PushNotifications:
     def send(self, notification: Any) -> None:
         """Send push notification to user."""
         try:
-            print(notification)
+            print(f"Sending push notification: {notification}")
             httpx.post(
                 "https://exp.host/--/api/v2/push/send",
                 json=notification,
