@@ -13,9 +13,9 @@ from identity_socializer.db.models.certified_request_model import CertifiedReque
 class StatusRequest(Enum):
     """Enum for status requests."""
 
-    APPROVED = "Aprobado"
-    REJECTED = "Rechazado"
-    PENDING = "Pendiente"
+    APPROVED = "Approved"
+    REJECTED = "Rejected"
+    PENDING = "Pending"
 
 
 class CertifiedRequestDAO:
@@ -72,6 +72,7 @@ class CertifiedRequestDAO:
             .where(
                 CertifiedRequestModel.id == certified_request_id,
             )
+            .where(CertifiedRequestModel.status == StatusRequest.PENDING.value)
             .values(
                 status=status,
             )
