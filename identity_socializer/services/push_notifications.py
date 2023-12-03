@@ -194,14 +194,15 @@ def _get_snap(snap_id: str, user_id: str) -> Any:
         timeout = httpx.Timeout(10.0, read=None)
         res = httpx.get(
             f"{url}/api/feed/snap/{snap_id}?user_id={user_id}",
-            verify=False, timeout=timeout,
-            headers={'accept': 'application/json'})
+            verify=False,
+            timeout=timeout,
+            headers={"accept": "application/json"},
+        )
         if res.status_code != 200:
             return None
     except Exception as e:
         print(f"FAIL TO GET SNAP FROM CONTENT DISCOVERY: {snap_id}")
         print(e)
         return None
-
 
     return res.json()
