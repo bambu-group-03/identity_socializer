@@ -47,4 +47,5 @@ class AppUserModel(BaseModel):
     ubication: Optional[str]
     is_followed: Optional[bool]
     blocked: bool = False
+    certified: bool = False
     model_config = ConfigDict(from_attributes=True)

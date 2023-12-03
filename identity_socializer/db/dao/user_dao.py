@@ -183,3 +183,19 @@ class UserDAO:
         rows = await self.session.execute(query)
 
         return rows.scalar() or 0
+
+    async def update_certified(
+        self,
+        user_id: str,
+        certified: bool,
+    ) -> None:
+        """Update certified."""
+        stmt = (
+            update(UserModel)
+            .where(UserModel.id == user_id)
+            .values(
+                certified=certified,
+            )
+        )
+
+        await self.session.execute(stmt)
