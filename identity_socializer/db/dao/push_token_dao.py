@@ -46,10 +46,10 @@ class PushTokenDAO:
             delete(PushTokenModel).where(PushTokenModel.user_id == user_id),
         )
 
-    async def get_push_tokens(self) -> List[str]:
+    async def get_push_tokens(self) -> List[PushTokenModel]:
         """Get all push tokens."""
         pushtokens = await self.session.execute(
-            select(PushTokenModel.pushtoken),
+            select(PushTokenModel),
         )
 
         return list(pushtokens.scalars().fetchall())

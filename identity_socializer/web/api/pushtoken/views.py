@@ -1,4 +1,4 @@
-from typing import List
+from typing import Any, List
 
 from fastapi import APIRouter, Depends
 
@@ -45,6 +45,6 @@ async def delete_push_tokens_by_user(
 @router.get("/get_all", response_model=None)
 async def get_push_tokens(
     push_token_dao: PushTokenDAO = Depends(),
-) -> List[str]:
+) -> Any:
     """Get all push tokens."""
     return await push_token_dao.get_push_tokens()
