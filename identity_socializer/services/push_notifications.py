@@ -1,13 +1,21 @@
 from typing import Any
 
 import httpx
+from mongoengine import connect
 
 from identity_socializer.db.collections.chats import get_chats_by_user_id
 from identity_socializer.db.collections.notifications import create_notification
 from identity_socializer.db.dao.push_token_dao import PushTokenDAO
 from identity_socializer.db.dao.relationship_dao import RelationshipDAO
 from identity_socializer.db.dao.user_dao import UserDAO
+from identity_socializer.settings import settings
 from identity_socializer.web.api.auth.views import get_user_model
+
+connect(
+    db="identity_socializer",
+    host=settings.mongo_host,
+    port=27017,
+)
 
 
 class PushNotifications:
@@ -52,18 +60,19 @@ class PushNotifications:
         # Create and save notification to database
         title = "Your snap have a new like!"
         body = f"@{username} liked your snap!"
-
+        print("before save_notification")
         self.save_notification(to_id, title, body)
 
         # Send push notification to user
         push_tokens = await push_token_dao.get_push_tokens_by_user(to_id)
+        print(f"push_tokens: {push_tokens}")
         for push_token in push_tokens:
-
             data = {
                 "screen": "LikeNotification",
                 "params": {"snap": snap},
             }
-
+            print("before _create_push_notification")
+            print(f"data: {data}")
             notification = _create_push_notification(push_token, title, body, data)
 
             self.send(notification)
