@@ -61,7 +61,7 @@ class PushNotifications:
 
             data = {
                 "screen": "LikeNotification",
-                "params": snap,
+                "params": {"snap": snap},
             }
 
             notification = _create_push_notification(push_token, title, body, data)
@@ -94,7 +94,7 @@ class PushNotifications:
 
             data = {
                 "screen": "NewFollowerNotification",
-                "params": user,
+                "params": {"user": user},
             }
 
             notification = _create_push_notification(push_token, title, body, data)
@@ -129,7 +129,7 @@ class PushNotifications:
 
             data = {
                 "screen": "NewMentionNotification",
-                "params": snap,
+                "params": {"snap": snap},
             }
 
             notification = _create_push_notification(push_token, title, body, data)
@@ -168,7 +168,7 @@ class PushNotifications:
 
             data = {
                 "screen": "NewMessageNotification",
-                "params": {chat, user},
+                "params": {"chat": chat, "user": user},
             }
 
             notification = _create_push_notification(push_token, title, body, data)
