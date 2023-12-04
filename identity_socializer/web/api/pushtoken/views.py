@@ -1,3 +1,5 @@
+from typing import List
+
 from fastapi import APIRouter, Depends
 
 from identity_socializer.db.dao.push_token_dao import PushTokenDAO
@@ -22,7 +24,7 @@ async def push_token_register(
 async def get_push_tokens_by_user(
     user_id: str,
     push_token_dao: PushTokenDAO = Depends(),
-) -> list[str]:
+) -> List[str]:
     """Get push tokens from user."""
     return await push_token_dao.get_push_tokens_by_user(
         user_id=user_id,
@@ -38,3 +40,11 @@ async def delete_push_tokens_by_user(
     await push_token_dao.delete_push_tokens_by_user(
         user_id=user_id,
     )
+
+
+@router.get("/get_all", response_model=None)
+async def get_push_tokens(
+    push_token_dao: PushTokenDAO = Depends(),
+) -> List[str]:
+    """Get all push tokens."""
+    return await push_token_dao.get_push_tokens()
