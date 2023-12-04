@@ -36,3 +36,8 @@ def create_notification(
 def get_messages_by_user_id(user_id: str) -> List[Notification]:
     """Get messages by chat id."""
     return Notification.objects(user_id=user_id).order_by("-created_at")
+
+
+def get_all_notifications() -> List[Notification]:
+    """Get all notifications."""
+    return Notification.objects().order_by("-created_at")

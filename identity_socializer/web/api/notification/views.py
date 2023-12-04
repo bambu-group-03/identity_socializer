@@ -1,9 +1,12 @@
-from typing import List
+from typing import Any, List
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from mongoengine import connect
 
-from identity_socializer.db.collections.notifications import get_messages_by_user_id
+from identity_socializer.db.collections.notifications import (
+    get_all_notifications,
+    get_messages_by_user_id,
+)
 from identity_socializer.db.dao.push_token_dao import PushTokenDAO
 from identity_socializer.db.dao.user_dao import UserDAO
 from identity_socializer.services.push_notifications import PushNotifications
@@ -23,6 +26,27 @@ connect(
 )
 
 
+@router.get("/get_all", response_model=None)
+async def new_all_notifications() -> Any:
+    """Creates a notification for new like event."""
+    my_notifications = []
+    notifications = get_all_notifications()
+
+    for notification in notifications:
+
+        notif = NotificationSchema(
+            id=str(notification.id),
+            user_id=notification.user_id,
+            title=notification.title,
+            content=notification.content,
+            created_at=str(notification.created_at),
+        )
+
+        my_notifications.append(notif)
+
+    return my_notifications
+
+
 @router.post("/new_like", response_model=None)
 async def new_like_notification(
     body: NotificationDTO,
@@ -34,7 +58,7 @@ async def new_like_notification(
     await push_notifications.new_like(
         body.from_id,
         body.to_id,
-        body.snap_id or "unknown",
+        body.snap,
         user_dao,
         push_token_dao,
     )
@@ -51,7 +75,7 @@ async def new_mention_notification(
     await push_notifications.new_mention(
         body.from_id,
         body.to_id,
-        body.snap_id or "unknown",
+        body.snap,
         user_dao,
         push_token_dao,
     )

@@ -45,16 +45,11 @@ class PushNotifications:
         self,
         from_id: str,
         to_id: str,
-        snap_id: str,
+        snap: Any,
         user_dao: UserDAO,
         push_token_dao: PushTokenDAO,
     ) -> None:
         """Send push notification for new like."""
-        snap = _get_snap(snap_id, to_id)
-
-        if snap is None:
-            return
-
         username = await user_dao.get_username_by_id(from_id) or "unknown"
 
         # Create and save notification to database
@@ -114,16 +109,11 @@ class PushNotifications:
         self,
         from_id: str,
         to_id: str,
-        snap_id: str,
+        snap: Any,
         user_dao: UserDAO,
         push_token_dao: PushTokenDAO,
     ) -> None:
         """Send push notification for new mention."""
-        snap = _get_snap(snap_id, to_id)
-
-        if snap is None:
-            return
-
         username = await user_dao.get_username_by_id(from_id) or "unknown"
 
         # Create and save notification to database
@@ -193,25 +183,3 @@ def _create_push_notification(push_token: str, title: str, body: str, data: Any)
         "body": body,
         "data": data,
     }
-
-
-def _get_snap(snap_id: str, user_id: str) -> Any:
-    """Get snap from content discovery."""
-    url = settings.content_discovery_url
-    print(f"snap_id: {snap_id} user_id: {user_id}")
-    try:
-        print(f"{url}/api/feed/snap/{snap_id}?user_id={user_id}")
-        timeout = httpx.Timeout(5.0, read=5.0)
-        res = httpx.get(
-            f"{url}/api/feed/snap/{snap_id}?user_id={user_id}",
-            headers={"accept": "application/json"},
-            timeout=timeout,
-        )
-        if res.status_code != 200:
-            return None
-    except Exception as e:
-        print(f"FAIL TO GET SNAP FROM CONTENT DISCOVERY: {snap_id}")
-        print(e)
-        return None
-
-    return res.json()
