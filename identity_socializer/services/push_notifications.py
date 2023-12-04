@@ -197,14 +197,12 @@ def _create_push_notification(push_token: str, title: str, body: str, data: Any)
 
 def _get_snap(snap_id: str, user_id: str) -> Any:
     """Get snap from content discovery."""
-    url = "https://api-content-discovery-luiscusihuaman.cloud.okteto.net"
+    url = settings.content_discovery_url
     print(f"snap_id: {snap_id} user_id: {user_id}")
     try:
-        timeout = httpx.Timeout(10.0, read=None)
+        print(f"{url}/api/feed/snap/{snap_id}?user_id={user_id}")
         res = httpx.get(
             f"{url}/api/feed/snap/{snap_id}?user_id={user_id}",
-            verify=False,
-            timeout=timeout,
             headers={"accept": "application/json"},
         )
         if res.status_code != 200:
