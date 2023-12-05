@@ -26,26 +26,6 @@ connect(
 )
 
 
-@router.get("/get_all", response_model=None)
-async def new_all_notifications() -> Any:
-    """Creates a notification for new like event."""
-    my_notifications = []
-    notifications = get_all_notifications()
-
-    for notification in notifications:
-
-        notif = NotificationSchema(
-            id=str(notification.id),
-            user_id=notification.user_id,
-            title=notification.title,
-            content=notification.content,
-            created_at=str(notification.created_at),
-        )
-
-        my_notifications.append(notif)
-
-    return my_notifications
-
 
 @router.get("/get_all", response_model=None)
 async def new_all_notifications() -> Any:
