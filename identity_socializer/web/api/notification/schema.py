@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Any
 
 from pydantic import BaseModel, ConfigDict
 
@@ -8,7 +8,7 @@ class NotificationDTO(BaseModel):
 
     from_id: str
     to_id: str
-    snap_id: Optional[str]
+    snap: Any
 
     model_config = ConfigDict(from_attributes=True)
 

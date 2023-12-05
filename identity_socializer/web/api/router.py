@@ -2,6 +2,7 @@ from fastapi.routing import APIRouter
 
 from identity_socializer.web.api import (
     auth,
+    certified_request,
     chat,
     docs,
     filter,
@@ -32,3 +33,8 @@ api_router.include_router(
     tags=["notification"],
 )
 api_router.include_router(pushtoken.router, prefix="/pushtoken", tags=["pushtoken"])
+api_router.include_router(
+    certified_request.router,
+    prefix="/certified_request",
+    tags=["certified_request"],
+)

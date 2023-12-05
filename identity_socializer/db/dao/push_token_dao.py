@@ -1,7 +1,7 @@
 from typing import List
 
 from fastapi import Depends
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from identity_socializer.db.dependencies import get_db_session
@@ -36,6 +36,20 @@ class PushTokenDAO:
         """Get list push tokens from user."""
         pushtokens = await self.session.execute(
             select(PushTokenModel.pushtoken).where(PushTokenModel.user_id == user_id),
+        )
+
+        return list(pushtokens.scalars().fetchall())
+
+    async def delete_push_tokens_by_user(self, user_id: str) -> None:
+        """Delete push tokens from user."""
+        await self.session.execute(
+            delete(PushTokenModel).where(PushTokenModel.user_id == user_id),
+        )
+
+    async def get_push_tokens(self) -> List[PushTokenModel]:
+        """Get all push tokens."""
+        pushtokens = await self.session.execute(
+            select(PushTokenModel),
         )
 
         return list(pushtokens.scalars().fetchall())

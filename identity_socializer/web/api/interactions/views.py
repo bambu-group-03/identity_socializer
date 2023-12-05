@@ -14,7 +14,7 @@ router = APIRouter()
 push_notifications = PushNotifications()
 
 
-@router.post("/{from_id}/follow/{followed_user_id}", response_model=None)
+@router.post("/{from_id}/follow/{to_id}", response_model=None)
 async def follow_user(
     from_id: str,
     to_id: str,

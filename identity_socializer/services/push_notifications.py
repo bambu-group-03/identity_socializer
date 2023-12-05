@@ -1,13 +1,21 @@
 from typing import Any
 
 import httpx
+from mongoengine import connect
 
 from identity_socializer.db.collections.chats import get_chats_by_user_id
 from identity_socializer.db.collections.notifications import create_notification
 from identity_socializer.db.dao.push_token_dao import PushTokenDAO
 from identity_socializer.db.dao.relationship_dao import RelationshipDAO
 from identity_socializer.db.dao.user_dao import UserDAO
+from identity_socializer.settings import settings
 from identity_socializer.web.api.auth.views import get_user_model
+
+connect(
+    db="identity_socializer",
+    host=settings.mongo_host,
+    port=27017,
+)
 
 
 class PushNotifications:
@@ -15,10 +23,15 @@ class PushNotifications:
 
     def send(self, notification: Any) -> None:
         """Send push notification to user."""
-        httpx.post(
-            "https://exp.host/--/api/v2/push/send",
-            json=notification,
-        )
+        print(f"Sending push notification: {notification}")
+        try:
+            httpx.post(
+                "https://exp.host/--/api/v2/push/send",
+                json=notification,
+            )
+        except Exception as e:
+            print(f"FAIL TO SEND PUSH NOTIFICATION: {notification}")
+            print(e)
 
     def save_notification(self, user_id: str, title: str, content: str) -> None:
         """Save notification to database."""
@@ -65,34 +78,29 @@ class PushNotifications:
         self,
         from_id: str,
         to_id: str,
-        snap_id: str,
+        snap: Any,
         user_dao: UserDAO,
         push_token_dao: PushTokenDAO,
     ) -> None:
         """Send push notification for new like."""
-        snap = _get_snap(snap_id, to_id)
-
-        if snap is None:
-            return
-
         username = await user_dao.get_username_by_id(from_id) or "unknown"
 
         # Create and save notification to database
         title = "Your snap have a new like!"
         body = f"@{username} liked your snap!"
-
+        print("before save_notification")
         self.save_notification(to_id, title, body)
 
         # Send push notification to user
         push_tokens = await push_token_dao.get_push_tokens_by_user(to_id)
+        print(f"push_tokens: {push_tokens}")
         for push_token in push_tokens:
-
             data = {
-                "LikeNotification": {
-                    "snap": snap,
-                },
+                "screen": "LikeNotification",
+                "params": {"snap": snap},
             }
-
+            print("before _create_push_notification")
+            print(f"data: {data}")
             notification = _create_push_notification(push_token, title, body, data)
 
             self.send(notification)
@@ -122,9 +130,8 @@ class PushNotifications:
         for push_token in push_tokens:
 
             data = {
-                "NewFollowerNotification": {
-                    "user": user,
-                },
+                "screen": "NewFollowerNotification",
+                "params": {"user": user},
             }
 
             notification = _create_push_notification(push_token, title, body, data)
@@ -135,16 +142,11 @@ class PushNotifications:
         self,
         from_id: str,
         to_id: str,
-        snap_id: str,
+        snap: Any,
         user_dao: UserDAO,
         push_token_dao: PushTokenDAO,
     ) -> None:
         """Send push notification for new mention."""
-        snap = _get_snap(snap_id, to_id)
-
-        if snap is None:
-            return
-
         username = await user_dao.get_username_by_id(from_id) or "unknown"
 
         # Create and save notification to database
@@ -158,9 +160,8 @@ class PushNotifications:
         for push_token in push_tokens:
 
             data = {
-                "NewMentionNotification": {
-                    "snap": snap,
-                },
+                "screen": "NewMentionNotification",
+                "params": {"snap": snap},
             }
 
             notification = _create_push_notification(push_token, title, body, data)
@@ -198,10 +199,8 @@ class PushNotifications:
         for push_token in push_tokens:
 
             data = {
-                "NewMessageNotification": {
-                    "chat": chat,
-                    "user": user,
-                },
+                "screen": "NewMessageNotification",
+                "params": {"chat": chat, "user": user},
             }
 
             notification = _create_push_notification(push_token, title, body, data)
@@ -217,16 +216,3 @@ def _create_push_notification(push_token: str, title: str, body: str, data: Any)
         "body": body,
         "data": data,
     }
-
-
-def _get_snap(snap_id: str, user_id: str) -> Any:
-    """Get snap from content discovery."""
-    url = "https://api-content-discovery-luiscusihuaman.cloud.okteto.net"
-
-    res = httpx.get(
-        f"{url}/api/feed/snap/{snap_id}?user_id={user_id}",
-    )
-
-    if res.status_code != 200:
-        return None
-    return res.json()
