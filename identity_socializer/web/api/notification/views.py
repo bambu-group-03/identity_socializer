@@ -23,6 +23,20 @@ connect(
 )
 
 
+@router.post("/new_trending", response_model=None)
+async def new_trending_notification(
+    topic: str,
+    user_dao: UserDAO = Depends(),
+    push_token_dao: PushTokenDAO = Depends(),
+    push_notifications: PushNotifications = Depends(),
+) -> None:
+    """Creates a notification for new like event."""
+    await push_notifications.new_trending(
+        topic,
+        user_dao,
+        push_token_dao,
+    )
+
 @router.post("/new_like", response_model=None)
 async def new_like_notification(
     body: NotificationDTO,

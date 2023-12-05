@@ -28,6 +28,39 @@ class PushNotifications:
             content=content,
         )
 
+    async def new_trending(
+        self,
+        topic_title: str,
+        push_token_dao: PushTokenDAO,
+        user_dao: UserDAO,
+    ) -> None:
+        """Send push notification for new trending topic."""
+
+        # Create and save notification to database
+        title = f"#{topic_title} is trending!"
+        body = "Tap to join the conversation."
+        users = await user_dao.get_all_users(limit=300, offset=0)
+        for user in users:
+            self.save_notification(user.id, title, body)
+
+            # Send push notification to user
+            push_tokens = await push_token_dao.get_push_tokens_by_user(user.id)
+
+            if not len(push_tokens):
+                print(f"No push tokens were found for user: {user}")
+
+            for push_token in push_tokens:
+
+                data = {
+                    "TrendingNotification": {
+                        "topic": topic_title,
+                    },
+                }
+
+                notification = _create_push_notification(push_token, title, body, data)
+
+                self.send(notification)
+
     async def new_like(
         self,
         from_id: str,
