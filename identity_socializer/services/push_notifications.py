@@ -48,7 +48,6 @@ class PushNotifications:
         user_dao: UserDAO,
     ) -> None:
         """Send push notification for new trending topic."""
-
         # Create and save notification to database
         title = f"#{topic_title} is trending!"
         body = "Tap to join the conversation."
@@ -97,7 +96,7 @@ class PushNotifications:
         for push_token in push_tokens:
             data = {
                 "screen": "LikeNotification",
-                "params": snap
+                "params": snap,
             }
             print("before _create_push_notification")
             print(f"data: {data}")

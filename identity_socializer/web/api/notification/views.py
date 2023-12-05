@@ -26,7 +26,6 @@ connect(
 )
 
 
-
 @router.get("/get_all", response_model=None)
 async def new_all_notifications() -> Any:
     """Creates a notification for new like event."""
@@ -58,9 +57,10 @@ async def new_trending_notification(
     """Creates a notification for new like event."""
     await push_notifications.new_trending(
         topic,
-        user_dao,
         push_token_dao,
+        user_dao,
     )
+
 
 @router.post("/new_like", response_model=None)
 async def new_like_notification(
