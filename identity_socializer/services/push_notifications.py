@@ -96,7 +96,7 @@ class PushNotifications:
         for push_token in push_tokens:
             data = {
                 "screen": "LikeNotification",
-                "params": snap,
+                "params": {"snap": snap},
             }
             print("before _create_push_notification")
             print(f"data: {data}")
