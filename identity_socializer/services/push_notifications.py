@@ -256,14 +256,3 @@ def _user_json_format(user: AppUserModel) -> Any:
         "blocked": user.blocked,
         "certified": user.certified,
     }
-
-def _chat_json_format(chat: ChatModel) -> dict:
-    """
-    Convert the chat model to a JSON serializable format.
-    """
-    return {
-        "id": str(chat.id),  # assuming id is not a string
-        "owner_id": chat.owner_id,
-        "other_id": chat.other_id,
-        "created_at": str(chat.created_at),  # assuming created_at is a datetime object
-    }
