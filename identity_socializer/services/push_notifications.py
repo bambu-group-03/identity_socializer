@@ -118,6 +118,9 @@ class PushNotifications:
         if user is None:
             return
 
+        # Remove interests from user
+        user.interests = None
+
         # Create and save notification to database
         title = "You have a new follower!"
         body = f"@{user.username} is following you!"
@@ -181,6 +184,9 @@ class PushNotifications:
 
         if user is None:
             return
+
+        # Remove interests from user
+        user.interests = None
 
         chat = get_chats_by_user_id(chat_to_id)
 
