@@ -14,6 +14,7 @@ class UserModelDTO(BaseModel):
     bio_msg: Optional[str]
     profile_photo_id: Optional[str]
     ubication: Optional[str]
+    interests: Optional[list]
     model_config = ConfigDict(from_attributes=True)
 
 

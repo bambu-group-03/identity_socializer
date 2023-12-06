@@ -1,6 +1,6 @@
 import datetime
 
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql.sqltypes import Boolean, DateTime, String
 
 from identity_socializer.db.base import Base
@@ -28,4 +28,9 @@ class UserModel(Base):
         DateTime,
         default=datetime.datetime.utcnow,
         nullable=False,
+    )
+    interests = relationship(
+        "InterestModel",
+        secondary="user_interests",
+        back_populates="users",
     )
