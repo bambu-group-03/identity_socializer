@@ -71,6 +71,7 @@ async def test_update_user(
             "bio_msg": "bio_msg_test",
             "profile_photo_id": "profile_photo_id_test",
             "ubication": "Argentina",
+            "interests": ["some interest"],
         },
     )
 

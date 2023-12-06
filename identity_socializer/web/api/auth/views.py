@@ -45,6 +45,7 @@ async def update_user(
         bio_msg=user.bio_msg,
         profile_photo_id=user.profile_photo_id,
         ubication=user.ubication,
+        interests=user.interests,
     )
 
 

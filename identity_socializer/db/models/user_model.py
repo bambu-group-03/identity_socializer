@@ -1,5 +1,7 @@
 import datetime
+from typing import List
 
+from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.sql.sqltypes import Boolean, DateTime, String
 
@@ -29,3 +31,4 @@ class UserModel(Base):
         default=datetime.datetime.utcnow,
         nullable=False,
     )
+    interests: Mapped[List[str]] = mapped_column(ARRAY(String), nullable=True)

@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional
 
 from pydantic import BaseModel, ConfigDict
 
@@ -14,6 +14,7 @@ class UserModelDTO(BaseModel):
     bio_msg: Optional[str]
     profile_photo_id: Optional[str]
     ubication: Optional[str]
+    interests: Optional[List[str]]
     model_config = ConfigDict(from_attributes=True)
 
 
@@ -49,4 +50,5 @@ class AppUserModel(BaseModel):
     is_followed_back: Optional[bool] = False
     blocked: bool = False
     certified: bool = False
+    interests: Optional[List[str]]
     model_config = ConfigDict(from_attributes=True)

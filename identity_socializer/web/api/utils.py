@@ -46,4 +46,5 @@ async def complete_user(
         is_followed_back=is_followed_back,
         blocked=user.blocked,
         certified=user.certified,
+        interests=user.interests,
     )
