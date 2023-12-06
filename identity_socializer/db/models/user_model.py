@@ -1,6 +1,8 @@
 import datetime
+from typing import List
 
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.dialects.postgresql import ARRAY
+from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.sql.sqltypes import Boolean, DateTime, String
 
 from identity_socializer.db.base import Base
@@ -29,8 +31,4 @@ class UserModel(Base):
         default=datetime.datetime.utcnow,
         nullable=False,
     )
-    interests = relationship(
-        "InterestModel",
-        secondary="user_interests",
-        back_populates="users",
-    )
+    interests: Mapped[List[str]] = mapped_column(ARRAY(String), nullable=True)

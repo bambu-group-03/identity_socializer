@@ -55,7 +55,7 @@ class UserDAO:
         bio_msg: Optional[str] = None,
         profile_photo_id: Optional[str] = None,
         ubication: Optional[str] = None,
-        interests: Optional[list] = None,
+        interests: Optional[List[str]] = None,
     ) -> None:
 
         """Update single user to session."""

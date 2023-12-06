@@ -29,19 +29,3 @@ class RelationshipModel(Base):
 
     follower = relationship("UserModel", foreign_keys=[follower_id])
     following = relationship("UserModel", foreign_keys=[following_id])
-
-
-class InterestModel(Base):
-    """Model for Interests."""
-
-    __tablename__ = "interests"
-
-    id: Mapped[str] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column(String(200), nullable=False)
-
-    # Relationship back to UserModel
-    users = relationship(
-        "UserModel",
-        secondary="user_interests",
-        back_populates="interests",
-    )
