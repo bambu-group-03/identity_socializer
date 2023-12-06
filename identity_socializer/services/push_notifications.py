@@ -9,6 +9,7 @@ from identity_socializer.db.dao.push_token_dao import PushTokenDAO
 from identity_socializer.db.dao.relationship_dao import RelationshipDAO
 from identity_socializer.db.dao.user_dao import UserDAO
 from identity_socializer.settings import settings
+from identity_socializer.web.api.auth.schema import AppUserModel
 from identity_socializer.web.api.auth.views import get_user_model
 
 connect(
@@ -118,9 +119,6 @@ class PushNotifications:
         if user is None:
             return
 
-        # Remove interests from user
-        user.interests = None
-
         # Create and save notification to database
         title = "You have a new follower!"
         body = f"@{user.username} is following you!"
@@ -133,7 +131,7 @@ class PushNotifications:
 
             data = {
                 "screen": "NewFollowerNotification",
-                "params": {"user": user},
+                "params": {"user": _user_json_format(user)},
             }
 
             notification = _create_push_notification(push_token, title, body, data)
@@ -185,9 +183,6 @@ class PushNotifications:
         if user is None:
             return
 
-        # Remove interests from user
-        user.interests = None
-
         chat = get_chats_by_user_id(chat_to_id)
 
         if chat is None:
@@ -205,7 +200,7 @@ class PushNotifications:
 
             data = {
                 "screen": "NewMessageNotification",
-                "params": {"chat": chat, "user": user},
+                "params": {"chat": chat, "user": _user_json_format(user)},
             }
 
             notification = _create_push_notification(push_token, title, body, data)
@@ -220,4 +215,22 @@ def _create_push_notification(push_token: str, title: str, body: str, data: Any)
         "title": title,
         "body": body,
         "data": data,
+    }
+
+
+def _user_json_format(user: AppUserModel) -> Any:
+    return {
+        "id": user.id,
+        "email": user.email,
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+        "username": user.username,
+        "phone_number": user.phone_number,
+        "bio_msg": user.bio_msg,
+        "profile_photo_id": user.profile_photo_id,
+        "ubication": user.ubication,
+        "is_followed": user.is_followed,
+        "is_followed_back": user.is_followed_back,
+        "blocked": user.blocked,
+        "certified": user.certified,
     }
