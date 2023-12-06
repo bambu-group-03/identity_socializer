@@ -190,19 +190,20 @@ class PushNotifications:
             return
         
         chat_dict = {
-        "id": str(chat.id),
-        "owner_id": chat.owner_id,
-        "other_id": chat.other_id,
-        "created_at": str(chat.created_at),
+            "id": str(chat.id),
+            "owner_id": chat.owner_id,
+            "other_id": chat.other_id,
+            "created_at": str(chat.created_at),
         }
         
         # Create and save notification to database
         title = "You have a new message!"
         body = f"@{user.username} sent you a message!"
 
-        data = {
+        # Prepare notification data
+        notification_data = {
             "screen": "NewMessageNotification",
-             "params": {
+            "params": {
                 "chat": chat_dict,
                 "user": _user_json_format(user),
             },
@@ -215,14 +216,7 @@ class PushNotifications:
         # Send push notification to user
         push_tokens = await push_token_dao.get_push_tokens_by_user(to_id)
         for push_token in push_tokens:
-
-            data = {
-                "screen": "NewMessageNotification",
-                "params": {"chat": chat, "user": _user_json_format(user)},
-            }
-
-            notification = _create_push_notification(push_token, title, body, data)
-
+            notification = _create_push_notification(push_token, title, body, notification_data)
             self.send(notification)
 
 
