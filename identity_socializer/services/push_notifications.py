@@ -188,20 +188,22 @@ class PushNotifications:
 
         if chat is None:
             return
-
+        
+        chat_dict = {
+        "id": str(chat.id),
+        "owner_id": chat.owner_id,
+        "other_id": chat.other_id,
+        "created_at": str(chat.created_at),
+        }
+        
         # Create and save notification to database
         title = "You have a new message!"
         body = f"@{user.username} sent you a message!"
 
         data = {
             "screen": "NewMessageNotification",
-            "params": {
-                "chat": {
-                    "id": str(chat.id),
-                    "owner_id": chat.owner_id,
-                    "other_id": chat.other_id,
-                    "created_at": str(chat.created_at),
-                },
+             "params": {
+                "chat": chat_dict,
                 "user": _user_json_format(user),
             },
         }
@@ -253,4 +255,15 @@ def _user_json_format(user: AppUserModel) -> Any:
         "is_followed_back": user.is_followed_back,
         "blocked": user.blocked,
         "certified": user.certified,
+    }
+
+def _chat_json_format(chat: ChatModel) -> dict:
+    """
+    Convert the chat model to a JSON serializable format.
+    """
+    return {
+        "id": str(chat.id),  # assuming id is not a string
+        "owner_id": chat.owner_id,
+        "other_id": chat.other_id,
+        "created_at": str(chat.created_at),  # assuming created_at is a datetime object
     }
