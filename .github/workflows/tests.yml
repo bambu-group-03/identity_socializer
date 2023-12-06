@@ -83,7 +83,7 @@ jobs:
         IDENTITY_SOCIALIZER_DB_HOST: localhost
   devflow:
     runs-on: ubuntu-latest
-    if: github.ref != 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
     steps:
     - name: checkout
       uses: actions/checkout@master
