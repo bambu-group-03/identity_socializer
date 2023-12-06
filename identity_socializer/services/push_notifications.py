@@ -1,3 +1,4 @@
+import json
 from typing import Any
 
 import httpx
@@ -209,14 +210,20 @@ class PushNotifications:
 
 
 def _create_push_notification(push_token: str, title: str, body: str, data: Any) -> Any:
+    """
+    Create a push notification payload ensuring that the data is in a
+    JSON serializable format.
+    """
+    # Ensure data is JSON serializable
+    serialized_data = json.loads(json.dumps(data, default=str))
+
     return {
         "to": push_token,
         "sound": "default",
         "title": title,
         "body": body,
-        "data": data,
+        "data": serialized_data,
     }
-
 
 def _user_json_format(user: AppUserModel) -> Any:
     return {
