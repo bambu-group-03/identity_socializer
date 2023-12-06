@@ -4,7 +4,7 @@ from typing import Any
 import httpx
 from mongoengine import connect
 
-from identity_socializer.db.collections.chats import get_chats_by_user_id
+from identity_socializer.db.collections.chats import get_chat_by_id
 from identity_socializer.db.collections.notifications import create_notification
 from identity_socializer.db.dao.push_token_dao import PushTokenDAO
 from identity_socializer.db.dao.relationship_dao import RelationshipDAO
@@ -184,7 +184,7 @@ class PushNotifications:
         if user is None:
             return
 
-        chat = get_chats_by_user_id(chat_to_id)
+        chat = get_chat_by_id(chat_to_id)
 
         if chat is None:
             return
@@ -192,6 +192,21 @@ class PushNotifications:
         # Create and save notification to database
         title = "You have a new message!"
         body = f"@{user.username} sent you a message!"
+
+        data = {
+            "screen": "NewMessageNotification",
+            "params": {
+                "chat": {
+                    "id": str(chat.id),
+                    "owner_id": chat.owner_id,
+                    "other_id": chat.other_id,
+                    "created_at": str(chat.created_at),
+                },
+                "user": _user_json_format(user),
+            },
+        }
+
+        print()
 
         self.save_notification(to_id, title, body)
 
@@ -210,10 +225,7 @@ class PushNotifications:
 
 
 def _create_push_notification(push_token: str, title: str, body: str, data: Any) -> Any:
-    """
-    Create a push notification payload ensuring that the data is in a
-    JSON serializable format.
-    """
+    """Create a push notification in a JSON serializable format."""
     # Ensure data is JSON serializable
     serialized_data = json.loads(json.dumps(data, default=str))
 
@@ -224,6 +236,7 @@ def _create_push_notification(push_token: str, title: str, body: str, data: Any)
         "body": body,
         "data": serialized_data,
     }
+
 
 def _user_json_format(user: AppUserModel) -> Any:
     return {

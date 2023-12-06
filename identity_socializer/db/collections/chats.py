@@ -16,6 +16,11 @@ class Chat(Document):
     }
 
 
+def get_chat_by_id(chat_id: str) -> Chat:
+    """Get chat by id."""
+    return Chat.objects.filter(id=chat_id).first()
+
+
 def get_chat(owner_id: str, other_id: str) -> str:
     """Create a chat in mongo db."""
     # Check if chat already exists
