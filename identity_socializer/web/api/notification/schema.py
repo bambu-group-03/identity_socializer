@@ -13,6 +13,15 @@ class NotificationDTO(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+class TrendingNotificationDTO(BaseModel):
+    """DTO for trending notification message."""
+
+    topic: str
+    snap: Any
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 class NotificationSchema(BaseModel):
     """DTO for chat."""
 

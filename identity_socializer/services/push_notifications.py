@@ -60,18 +60,17 @@ class PushNotifications:
     ) -> None:
         """Send push notification for new trending topic."""
         # Create and save notification to database
-        pass
 
     async def new_trending_snap(
         self,
         topic_title: str,
-        snap_id: str,
+        snap: Any,
         user_dao: UserDAO,
-        push_token_dao: PushTokenDAO
+        push_token_dao: PushTokenDAO,
     ) -> None:
         """Send push notification for new trending topic snap."""
         # Create and save notification to database
-        title = f"There's a new tweet about #{topic_title}!"
+        title = f"There's a new tweet about {topic_title}!"
         body = "Tap to join the conversation."
         print("trying to sendnotif")
         users = await user_dao.get_all_users(limit=300, offset=0)
@@ -82,7 +81,7 @@ class PushNotifications:
                 title,
                 body,
                 "NewTrendingNotification",
-                snap_id,
+                None, # snap["id"]
             )
 
             # Send push notification to user
@@ -94,9 +93,8 @@ class PushNotifications:
             for push_token in push_tokens:
 
                 data = {
-                    "TrendingNotification": {
-                        "topic": topic_title,
-                    },
+                    "screen": "NewTrendingNotification",
+                    "params": {"snap": snap},
                 }
 
                 notification = _create_push_notification(push_token, title, body, data)

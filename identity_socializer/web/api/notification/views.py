@@ -13,6 +13,7 @@ from identity_socializer.services.push_notifications import PushNotifications
 from identity_socializer.settings import settings
 from identity_socializer.web.api.notification.schema import (
     NotificationDTO,
+    TrendingNotificationDTO,
     NotificationSchema,
 )
 
@@ -66,16 +67,15 @@ async def new_trending_notification(
 
 @router.post("/new_trending_snap")
 async def new_trending_snap_notification(
-    snap_id: str,
-    topic: str,
+    body: TrendingNotificationDTO,
     user_dao: UserDAO = Depends(),
     push_token_dao: PushTokenDAO = Depends(),
     push_notifications: PushNotifications = Depends(),
 ) -> None:
     """Creates a notification for new like event."""
     await push_notifications.new_trending_snap(
-        topic,
-        snap_id,
+        body.topic,
+        body.snap,
         user_dao,
         push_token_dao,
     )
