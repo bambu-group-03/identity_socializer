@@ -144,13 +144,28 @@ async def signup_google(
     )
 
 
-@router.post("/reset_password")
-async def reset_password(
+@router.post("/reset_password_successful")
+async def reset_password_successful(
     logger_entry: LoggerEntry,
     logger_dao: LoggerDAO = Depends(),
 ) -> None:
     """Reset password."""
-    event = LogEvent.RESET_PASSWORD
+    event = LogEvent.RESET_PASSWORD_SUCCESSFUL
+
+    await logger_dao.create_logger_model(
+        event=event.value,
+        message=logger_entry.message,
+        email=logger_entry.email,
+    )
+
+
+@router.post("/reset_password_error")
+async def reset_password_error(
+    logger_entry: LoggerEntry,
+    logger_dao: LoggerDAO = Depends(),
+) -> None:
+    """Reset password."""
+    event = LogEvent.RESET_PASSWORD_ERROR
 
     await logger_dao.create_logger_model(
         event=event.value,

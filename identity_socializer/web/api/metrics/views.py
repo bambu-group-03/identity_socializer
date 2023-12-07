@@ -45,3 +45,11 @@ async def get_log_in_rates(
 ) -> Dict[str, str]:
     """Get log in rates."""
     return await metrics_dao.get_log_in_rates()
+
+
+@router.get("/get_reset_password_rates", response_model=None)
+async def get_reset_password_rates(
+    metrics_dao: MetricDAO = Depends(),
+) -> Dict[str, str]:
+    """Get reset password rates."""
+    return await metrics_dao.get_reset_password_rates()

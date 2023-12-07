@@ -239,16 +239,9 @@ class MetricDAO:
             ),
         )
 
-        res_reset = await self.session.execute(
-            select(func.count(LoggerModel.id)).where(
-                LoggerModel.event == LogEvent.RESET_PASSWORD.value,
-            ),
-        )
-
         n_log_in_successful = res_success.scalar() or 0
         n_log_in_google = res_google.scalar() or 0
         n_log_in_error = res_error.scalar() or 0
-        n_reset_password = res_reset.scalar() or 0
 
         total_log_ins = n_log_in_successful + n_log_in_error
 
@@ -266,17 +259,43 @@ class MetricDAO:
             "log_in_error": str(n_log_in_error),
             "log_in_successful_rate": str(round(log_in_successful_rate, 1)),
             "log_in_error_rate": str(round(log_in_error_rate, 1)),
-            "reset_password": str(n_reset_password),
         }
 
+    async def get_reset_password_rates(self) -> Dict[str, str]:
+        """Get reset password rates."""
+        res_reset_successful = await self.session.execute(
+            select(func.count(LoggerModel.id)).where(
+                LoggerModel.event == LogEvent.RESET_PASSWORD_SUCCESSFUL.value,
+            ),
+        )
 
-def _get_month_by_number(month: int) -> str:
-    """Get month name by number."""
-    if month == 10:
-        return "October-2023"
-    elif month == 11:
-        return "November-2023"
-    elif month == 12:
-        return "December-2023"
+        res_reset_error = await self.session.execute(
+            select(func.count(LoggerModel.id)).where(
+                LoggerModel.event == LogEvent.RESET_PASSWORD_ERROR.value,
+            ),
+        )
 
-    return "unkwnown"
+        n_reset_password_successful = res_reset_successful.scalar() or 0
+        n_reset_password_error = res_reset_error.scalar() or 0
+
+        total_reset_password = n_reset_password_successful + n_reset_password_error
+
+        reset_password_successful_rate = (
+            0
+            if total_reset_password == 0
+            else (n_reset_password_successful / total_reset_password) * 100
+        )
+
+        reset_password_error_rate = (
+            0
+            if total_reset_password == 0
+            else (n_reset_password_error / total_reset_password) * 100
+        )
+
+        return {
+            "total_reset_password": str(total_reset_password),
+            "reset_password_successful": str(n_reset_password_successful),
+            "reset_password_error": str(n_reset_password_error),
+            "reset_password_successful_rate": str(reset_password_successful_rate),
+            "reset_password_error_rate": str(reset_password_error_rate),
+        }
