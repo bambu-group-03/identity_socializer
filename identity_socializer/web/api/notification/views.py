@@ -1,7 +1,6 @@
 from typing import Any, List
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from mongoengine import connect
 
 from identity_socializer.db.collections.notifications import (
     get_all_notifications,
@@ -10,7 +9,6 @@ from identity_socializer.db.collections.notifications import (
 from identity_socializer.db.dao.push_token_dao import PushTokenDAO
 from identity_socializer.db.dao.user_dao import UserDAO
 from identity_socializer.services.push_notifications import PushNotifications
-from identity_socializer.settings import settings
 from identity_socializer.web.api.notification.schema import (
     NotificationDTO,
     NotificationSchema,
@@ -18,13 +16,6 @@ from identity_socializer.web.api.notification.schema import (
 )
 
 router = APIRouter()
-
-# Create connection to mongo db
-connect(
-    db="identity_socializer",
-    host=settings.mongo_host,
-    port=27017,
-)
 
 
 @router.get("/get_all", response_model=None)

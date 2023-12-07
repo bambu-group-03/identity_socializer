@@ -32,7 +32,7 @@ class PushNotifications:
                 json=notification,
             )
         except Exception as e:
-            print(f"FAIL TO SEND PUSH NOTIFICATION: {notification}")
+            print(f"Fail to send push notification: {e}")
             print(e)
 
     def save_notification(
@@ -40,7 +40,7 @@ class PushNotifications:
         user_id: str,
         title: str,
         content: str,
-        _type: Optional[str] = None,
+        notif_type: Optional[str] = None,
         redirect_id: Optional[str] = None,
     ) -> None:
         """Save notification to database."""
@@ -48,18 +48,9 @@ class PushNotifications:
             user_id=user_id,
             title=title,
             content=content,
-            notification_type=_type,
-            redirect_id=(redirect_id if redirect_id else None),
+            notification_type=notif_type,
+            redirect_id=redirect_id,
         )
-
-    async def new_trending(
-        self,
-        topic_title: str,
-        push_token_dao: PushTokenDAO,
-        user_dao: UserDAO,
-    ) -> None:
-        """Send push notification for new trending topic."""
-        # Create and save notification to database
 
     async def new_trending_snap(
         self,
@@ -72,7 +63,8 @@ class PushNotifications:
         # Create and save notification to database
         title = f"There's a new tweet about {topic_title}!"
         body = "Tap to join the conversation."
-        print("trying to sendnotif")
+        notif_type = "NewTrendingNotification"
+
         users = await user_dao.get_all_users(limit=300, offset=0)
         for user in users:
             print(user)
@@ -80,20 +72,17 @@ class PushNotifications:
                 user.id,
                 title,
                 body,
-                "NewTrendingNotification",
-                None,  # snap["id"]
+                notif_type,
+                snap.id,
             )
 
             # Send push notification to user
             push_tokens = await push_token_dao.get_push_tokens_by_user(user.id)
 
-            if not len(push_tokens):
-                print(f"No push tokens were found for user: {user}")
-
             for push_token in push_tokens:
 
                 data = {
-                    "screen": "NewTrendingNotification",
+                    "screen": notif_type,
                     "params": {"snap": snap},
                 }
 
@@ -115,19 +104,19 @@ class PushNotifications:
         # Create and save notification to database
         title = "Your snap have a new like!"
         body = f"@{username} liked your snap!"
-        print("before save_notification")
-        self.save_notification(to_id, title, body)
+        notif_type = "LikeNotification"
+
+        self.save_notification(to_id, title, body, notif_type, snap.id)
 
         # Send push notification to user
         push_tokens = await push_token_dao.get_push_tokens_by_user(to_id)
-        print(f"push_tokens: {push_tokens}")
+
         for push_token in push_tokens:
             data = {
-                "screen": "LikeNotification",
+                "screen": notif_type,
                 "params": {"snap": snap},
             }
-            print("before _create_push_notification")
-            print(f"data: {data}")
+
             notification = _create_push_notification(push_token, title, body, data)
 
             self.send(notification)
@@ -149,15 +138,16 @@ class PushNotifications:
         # Create and save notification to database
         title = "You have a new follower!"
         body = f"@{user.username} is following you!"
+        notif_type = "NewFollowerNotification"
 
-        self.save_notification(to_id, title, body)
+        self.save_notification(to_id, title, body, notif_type, user.id)
 
         # Send push notification to user
         push_tokens = await push_token_dao.get_push_tokens_by_user(to_id)
         for push_token in push_tokens:
 
             data = {
-                "screen": "NewFollowerNotification",
+                "screen": notif_type,
                 "params": {"user": _user_json_format(user)},
             }
 
@@ -179,15 +169,16 @@ class PushNotifications:
         # Create and save notification to database
         title = "You have a new mention!"
         body = f"@{username} mentioned you!"
+        notif_type = "NewMentionNotification"
 
-        self.save_notification(to_id, title, body)
+        self.save_notification(to_id, title, body, notif_type, snap.id)
 
         # Send push notification to user
         push_tokens = await push_token_dao.get_push_tokens_by_user(to_id)
         for push_token in push_tokens:
 
             data = {
-                "screen": "NewMentionNotification",
+                "screen": notif_type,
                 "params": {"snap": snap},
             }
 
@@ -225,19 +216,18 @@ class PushNotifications:
         # Create and save notification to database
         title = "You have a new message!"
         body = f"@{user.username} sent you a message!"
+        notif_type = "NewMessageNotification"
 
         # Prepare notification data
         notification_data = {
-            "screen": "NewMessageNotification",
+            "screen": notif_type,
             "params": {
                 "chat": chat_dict,
                 "user": _user_json_format(user),
             },
         }
 
-        print()
-
-        self.save_notification(to_id, title, body)
+        self.save_notification(to_id, title, body, notif_type, chat.id)
 
         # Send push notification to user
         push_tokens = await push_token_dao.get_push_tokens_by_user(to_id)
