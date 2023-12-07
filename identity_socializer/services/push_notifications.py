@@ -1,5 +1,5 @@
 import json
-from typing import Any
+from typing import Any, Optional
 
 import httpx
 from mongoengine import connect
@@ -40,8 +40,8 @@ class PushNotifications:
         user_id: str,
         title: str,
         content: str,
-        _type: str = None,
-        redirect_id: str = None,
+        _type: Optional[str] = None,
+        redirect_id: Optional[str] = None,
     ) -> None:
         """Save notification to database."""
         create_notification(
