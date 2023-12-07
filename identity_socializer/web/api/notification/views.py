@@ -74,6 +74,23 @@ async def new_like_notification(
     )
 
 
+@router.post("/new_reply", response_model=None)
+async def new_reply_notification(
+    body: NotificationDTO,
+    user_dao: UserDAO = Depends(),
+    push_token_dao: PushTokenDAO = Depends(),
+    push_notifications: PushNotifications = Depends(),
+) -> None:
+    """Creates a notification for new reply event."""
+    await push_notifications.new_reply(
+        body.from_id,
+        body.to_id,
+        body.snap,
+        user_dao,
+        push_token_dao,
+    )
+
+
 @router.post("/new_mention", response_model=None)
 async def new_mention_notification(
     body: NotificationDTO,

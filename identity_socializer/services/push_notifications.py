@@ -121,6 +121,37 @@ class PushNotifications:
 
             self.send(notification)
 
+    async def new_reply(
+        self,
+        from_id: str,
+        to_id: str,
+        snap: Any,
+        user_dao: UserDAO,
+        push_token_dao: PushTokenDAO,
+    ) -> None:
+        """Send push notification for new reply."""
+        username = await user_dao.get_username_by_id(from_id) or "unknown"
+
+        # Create and save notification to database
+        title = "Your snap have a new reply!"
+        body = f"@{username} replied your snap!"
+        notif_type = "NewCommentNotification"
+
+        self.save_notification(to_id, title, body, notif_type, snap["id"])
+
+        # Send push notification to user
+        push_tokens = await push_token_dao.get_push_tokens_by_user(to_id)
+
+        for push_token in push_tokens:
+            data = {
+                "screen": notif_type,
+                "params": {"snap": snap},
+            }
+
+            notification = _create_push_notification(push_token, title, body, data)
+
+            self.send(notification)
+
     async def new_follower(
         self,
         from_id: str,
