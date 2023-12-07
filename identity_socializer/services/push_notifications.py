@@ -36,17 +36,20 @@ class PushNotifications:
             print(e)
 
     def save_notification(
-        self, user_id: str,
-        title: str, content: str,
+        self,
+        user_id: str,
+        title: str,
+        content: str,
         _type: str = None,
-        redirect_id: str = None) -> None:
+        redirect_id: str = None,
+    ) -> None:
         """Save notification to database."""
         create_notification(
             user_id=user_id,
             title=title,
             content=content,
             notification_type=_type,
-            redirect_id= (redirect_id if redirect_id else None)
+            redirect_id=(redirect_id if redirect_id else None),
         )
 
     async def new_trending(
@@ -96,7 +99,12 @@ class PushNotifications:
         for user in users:
             print(user)
             self.save_notification(
-                user.id, title, body, "NewTrendingNotification", snap_id)
+                user.id,
+                title,
+                body,
+                "NewTrendingNotification",
+                snap_id,
+            )
 
     async def new_like(
         self,
