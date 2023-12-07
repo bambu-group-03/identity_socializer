@@ -60,11 +60,30 @@ class PushNotifications:
     ) -> None:
         """Send push notification for new trending topic."""
         # Create and save notification to database
-        title = f"#{topic_title} is trending!"
+        pass
+
+    async def new_trending_snap(
+        self,
+        topic_title: str,
+        snap_id: str,
+        user_dao: UserDAO,
+        push_token_dao: PushTokenDAO
+    ) -> None:
+        """Send push notification for new trending topic snap."""
+        # Create and save notification to database
+        title = f"There's a new tweet about #{topic_title}!"
         body = "Tap to join the conversation."
+        print("trying to sendnotif")
         users = await user_dao.get_all_users(limit=300, offset=0)
         for user in users:
-            self.save_notification(user.id, title, body)
+            print(user)
+            self.save_notification(
+                user.id,
+                title,
+                body,
+                "NewTrendingNotification",
+                snap_id,
+            )
 
             # Send push notification to user
             push_tokens = await push_token_dao.get_push_tokens_by_user(user.id)
@@ -83,28 +102,6 @@ class PushNotifications:
                 notification = _create_push_notification(push_token, title, body, data)
 
                 self.send(notification)
-
-    async def new_trending_snap(
-        self,
-        topic_title: str,
-        snap_id: str,
-        user_dao: UserDAO,
-    ) -> None:
-        """Send push notification for new trending topic snap."""
-        # Create and save notification to database
-        title = f"There's a new tweet about #{topic_title} in {snap_id}!"
-        body = "Tap to join the conversation."
-        print("trying to sendnotif")
-        users = await user_dao.get_all_users(limit=300, offset=0)
-        for user in users:
-            print(user)
-            self.save_notification(
-                user.id,
-                title,
-                body,
-                "NewTrendingNotification",
-                snap_id,
-            )
 
     async def new_like(
         self,

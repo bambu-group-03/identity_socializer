@@ -77,6 +77,7 @@ async def new_trending_snap_notification(
         topic,
         snap_id,
         user_dao,
+        push_token_dao,
     )
 
 
