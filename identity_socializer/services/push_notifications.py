@@ -104,7 +104,7 @@ class PushNotifications:
         # Create and save notification to database
         title = "Your snap have a new like!"
         body = f"@{username} liked your snap!"
-        notif_type = "LikeNotification"
+        notif_type = "NewLikeNotification"
 
         self.save_notification(to_id, title, body, notif_type, snap.id)
 
