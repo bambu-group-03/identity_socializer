@@ -106,7 +106,7 @@ class PushNotifications:
         body = f"@{username} liked your snap!"
         notif_type = "NewLikeNotification"
 
-        self.save_notification(to_id, title, body, notif_type, snap.id)
+        self.save_notification(to_id, title, body, notif_type, snap["id"])
 
         # Send push notification to user
         push_tokens = await push_token_dao.get_push_tokens_by_user(to_id)
@@ -171,7 +171,7 @@ class PushNotifications:
         body = f"@{username} mentioned you!"
         notif_type = "NewMentionNotification"
 
-        self.save_notification(to_id, title, body, notif_type, snap.id)
+        self.save_notification(to_id, title, body, notif_type, snap["id"])
 
         # Send push notification to user
         push_tokens = await push_token_dao.get_push_tokens_by_user(to_id)
