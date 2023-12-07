@@ -50,21 +50,6 @@ async def new_all_notifications() -> Any:
     return my_notifications
 
 
-@router.post("/new_trending", response_model=None)
-async def new_trending_notification(
-    topic: str,
-    user_dao: UserDAO = Depends(),
-    push_token_dao: PushTokenDAO = Depends(),
-    push_notifications: PushNotifications = Depends(),
-) -> None:
-    """Creates a notification for new like event."""
-    await push_notifications.new_trending(
-        topic,
-        push_token_dao,
-        user_dao,
-    )
-
-
 @router.post("/new_trending_snap")
 async def new_trending_snap_notification(
     body: TrendingNotificationDTO,
