@@ -2,9 +2,10 @@ import datetime
 from typing import List, Optional
 
 from fastapi import Depends
-from sqlalchemy import func, select, update
+from sqlalchemy import func, not_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from identity_socializer.db.dao.relationship_dao import RelationshipDAO
 from identity_socializer.db.dependencies import get_db_session
 from identity_socializer.db.models.user_model import UserModel
 
@@ -201,3 +202,58 @@ class UserDAO:
         )
 
         await self.session.execute(stmt)
+
+    async def get_recommended_users(
+        self,
+        user_id: str,
+    ) -> List[UserModel]:
+        """Get recommended users."""
+        n_recommended = 5
+        user = await self.get_user_by_id(user_id)
+
+        if not user:
+            return []
+
+        following = await RelationshipDAO(self.session).get_following_by_id(user_id)
+        following_ids = [user.id for user in following]
+
+        print(following_ids)
+
+        query = select(UserModel)
+        query = query.where(UserModel.id != user_id)
+        query = query.where(not_(UserModel.id.in_(following_ids)))
+        query = query.where(UserModel.ubication == user.ubication)
+        query = query.where(UserModel.interests.overlap(user.interests))
+        query = query.order_by(func.random())
+        query = query.limit(n_recommended)
+
+        rows = await self.session.execute(query)
+        recommendations = list(rows.scalars().fetchall())
+
+        print(recommendations)
+
+        excluded_ids = [user_id] + following_ids
+        excluded_ids = [user.id for user in recommendations]
+
+        random_users = await self._get_random_users(
+            user_id,
+            excluded_ids,
+            n_recommended,
+        )
+
+        return recommendations + random_users
+
+    async def _get_random_users(
+        self,
+        user_id: str,
+        excluded_ids: List[str],
+        n_users: int,
+    ) -> List[UserModel]:
+        """Get random users."""
+        query = select(UserModel)
+        query = query.where(~UserModel.id.in_(excluded_ids))
+        query = query.order_by(func.random())
+        query = query.limit(n_users)
+
+        rows = await self.session.execute(query)
+        return list(rows.scalars().fetchall())

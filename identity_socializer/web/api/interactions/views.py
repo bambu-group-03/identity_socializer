@@ -143,3 +143,14 @@ async def count_followers_by_user_id(
 ) -> int:
     """Get number of followers of user_id."""
     return await relationship_dao.count_followers_by_user_id(user_id)
+
+
+@router.get("/{user_id}/recommended_users", response_model=None)
+async def get_recommended_users(
+    user_id: str,
+    user_dao: UserDAO = Depends(),
+    relationship_dao: RelationshipDAO = Depends(),
+) -> List[AppUserModel]:
+    """Get recommended users for user_id."""
+    recommended_users = await user_dao.get_recommended_users(user_id)
+    return await complete_users(recommended_users, user_id, relationship_dao)
