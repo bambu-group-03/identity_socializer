@@ -1,4 +1,4 @@
-from typing import List
+from typing import Any
 
 from fastapi import APIRouter, Depends
 
@@ -7,7 +7,6 @@ from identity_socializer.db.dao.certified_request_dao import (
     StatusRequest,
 )
 from identity_socializer.db.dao.user_dao import UserDAO
-from identity_socializer.db.models.certified_request_model import CertifiedRequestModel
 from identity_socializer.web.api.certified_request.schema import CertifiedRequestDTO
 
 router = APIRouter()
@@ -36,10 +35,35 @@ async def create_certified_request(
 async def get_all_certified_requests(
     limit: int = 10,
     offset: int = 0,
-    dao: CertifiedRequestDAO = Depends(),
-) -> List[CertifiedRequestModel]:
+    cq_dao: CertifiedRequestDAO = Depends(),
+    user_dao: UserDAO = Depends(),
+) -> Any:
     """Get all certified requests."""
-    return await dao.get_all_certified_requests(limit=limit, offset=offset)
+    completed_cqs = []
+
+    certifieds = await cq_dao.get_all_certified_requests(limit=limit, offset=offset)
+
+    for certified in certifieds:
+
+        user = await user_dao.get_user_by_id(certified.user_id)
+
+        username = user.username if user else "unknown"
+        email = user.email if user else "unknown"
+
+        completed_cq = {
+            "id": certified.id,
+            "user_id": certified.user_id,
+            "dni": certified.dni,
+            "img1_url": certified.img1_url,
+            "img2_url": certified.img2_url,
+            "status": certified.status,
+            "created_at": certified.created_at,
+            "username": username,
+            "email": email,
+        }
+        completed_cqs.append(completed_cq)
+
+    return completed_cqs
 
 
 @router.delete("/delete/{certified_request_id}", response_model=None)
