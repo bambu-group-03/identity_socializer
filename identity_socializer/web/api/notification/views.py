@@ -39,6 +39,8 @@ async def new_all_notifications() -> Any:
             user_id=notification.user_id,
             title=notification.title,
             content=notification.content,
+            notification_type=notification.notification_type,
+            redirect_id=notification.redirect_id,
             created_at=str(notification.created_at),
         )
 
@@ -132,6 +134,8 @@ def get_notifications_by_user_id(
                 user_id=notification.user_id,
                 title=notification.title,
                 content=notification.content,
+                notification_type=notification.notification_type,
+                redirect_id=notification.redirect_id,
                 created_at=str(notification.created_at),
             )
 

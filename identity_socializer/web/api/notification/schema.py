@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Optional
 
 from pydantic import BaseModel, ConfigDict
 
@@ -20,6 +20,8 @@ class NotificationSchema(BaseModel):
     user_id: str
     title: str
     content: str
+    notification_type: Optional[str]
+    redirect_id: Optional[str]
     created_at: str
 
     model_config = ConfigDict(from_attributes=True)
