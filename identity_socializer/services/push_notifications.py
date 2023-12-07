@@ -258,7 +258,7 @@ class PushNotifications:
             },
         }
 
-        self.save_notification(to_id, title, body, notif_type, chat.id)
+        self.save_notification(to_id, title, body, notif_type, str(chat.id))
 
         # Send push notification to user
         push_tokens = await push_token_dao.get_push_tokens_by_user(to_id)
