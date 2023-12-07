@@ -63,7 +63,7 @@ async def new_trending_notification(
 
 
 @router.post("/new_trending_snap", response_model=None)
-async def new_trending_notification(
+async def new_trending_snap_notification(
     snap_id: str,
     topic: str,
     user_dao: UserDAO = Depends(),
