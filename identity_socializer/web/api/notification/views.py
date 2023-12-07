@@ -13,8 +13,8 @@ from identity_socializer.services.push_notifications import PushNotifications
 from identity_socializer.settings import settings
 from identity_socializer.web.api.notification.schema import (
     NotificationDTO,
-    TrendingNotificationDTO,
     NotificationSchema,
+    TrendingNotificationDTO,
 )
 
 router = APIRouter()

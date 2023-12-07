@@ -81,7 +81,7 @@ class PushNotifications:
                 title,
                 body,
                 "NewTrendingNotification",
-                None, # snap["id"]
+                None,  # snap["id"]
             )
 
             # Send push notification to user
