@@ -215,13 +215,14 @@ class UserDAO:
             return []
 
         following = await RelationshipDAO(self.session).get_following_by_id(user_id)
-        following_ids = [user.id for user in following]
+        following_id = [user.id for user in following]
 
-        print(following_ids)
+        excluded_ids = [user_id]
+        excluded_ids.extend(following_id)
 
         query = select(UserModel)
         query = query.where(UserModel.id != user_id)
-        query = query.where(not_(UserModel.id.in_(following_ids)))
+        query = query.where(not_(UserModel.id.in_(excluded_ids)))
         query = query.where(UserModel.ubication == user.ubication)
         query = query.where(UserModel.interests.overlap(user.interests))
         query = query.order_by(func.random())
@@ -230,10 +231,8 @@ class UserDAO:
         rows = await self.session.execute(query)
         recommendations = list(rows.scalars().fetchall())
 
-        print(recommendations)
-
-        excluded_ids = [user_id] + following_ids
-        excluded_ids = [user.id for user in recommendations]
+        recommendations_ids = [user.id for user in recommendations]
+        excluded_ids.extend(recommendations_ids)
 
         random_users = await self._get_random_users(
             user_id,
