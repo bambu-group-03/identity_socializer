@@ -50,7 +50,7 @@ async def new_all_notifications() -> Any:
     return my_notifications
 
 
-@router.post("/new_trending_snap")
+@router.post("/new_trending_snap", response_model=None)
 async def new_trending_snap_notification(
     body: TrendingNotificationDTO,
     user_dao: UserDAO = Depends(),
