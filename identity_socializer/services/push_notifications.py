@@ -91,8 +91,10 @@ class PushNotifications:
         # Create and save notification to database
         title = f"There's a new tweet about #{topic_title} in {snap_id}!"
         body = "Tap to join the conversation."
+        print("trying to sendnotif")
         users = await user_dao.get_all_users(limit=300, offset=0)
         for user in users:
+            print(user)
             self.save_notification(
                 user.id, title, body, "NewTrendingNotification", snap_id)
 

@@ -62,7 +62,7 @@ async def new_trending_notification(
     )
 
 
-@router.post("/new_trending_snap", response_model=None)
+@router.post("/new_trending_snap")
 async def new_trending_snap_notification(
     snap_id: str,
     topic: str,
@@ -74,7 +74,6 @@ async def new_trending_snap_notification(
     await push_notifications.new_trending_snap(
         topic,
         snap_id,
-        push_token_dao,
         user_dao,
     )
 
