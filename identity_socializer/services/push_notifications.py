@@ -75,6 +75,20 @@ class PushNotifications:
 
                 self.send(notification)
 
+    async def new_trending_snap(
+        self,
+        topic_title: str,
+        snap_id: str,
+        user_dao: UserDAO,
+    ) -> None:
+        """Send push notification for new trending topic snap."""
+        # Create and save notification to database
+        title = f"There's a new tweet about #{topic_title} in {snap_id}!"
+        body = "Tap to join the conversation."
+        users = await user_dao.get_all_users(limit=300, offset=0)
+        for user in users:
+            self.save_notification(user.id, title, body)
+
     async def new_like(
         self,
         from_id: str,
@@ -188,14 +202,14 @@ class PushNotifications:
 
         if chat is None:
             return
-        
+
         chat_dict = {
             "id": str(chat.id),
             "owner_id": chat.owner_id,
             "other_id": chat.other_id,
             "created_at": str(chat.created_at),
         }
-        
+
         # Create and save notification to database
         title = "You have a new message!"
         body = f"@{user.username} sent you a message!"
@@ -216,7 +230,12 @@ class PushNotifications:
         # Send push notification to user
         push_tokens = await push_token_dao.get_push_tokens_by_user(to_id)
         for push_token in push_tokens:
-            notification = _create_push_notification(push_token, title, body, notification_data)
+            notification = _create_push_notification(
+                push_token,
+                title,
+                body,
+                notification_data,
+            )
             self.send(notification)
 
 
