@@ -73,7 +73,7 @@ class PushNotifications:
                 title,
                 body,
                 notif_type,
-                snap.id,
+                snap["id"],
             )
 
             # Send push notification to user
