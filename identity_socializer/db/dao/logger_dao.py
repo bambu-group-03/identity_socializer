@@ -296,6 +296,8 @@ class MetricDAO:
             "total_reset_password": str(total_reset_password),
             "reset_password_successful": str(n_reset_password_successful),
             "reset_password_error": str(n_reset_password_error),
-            "reset_password_successful_rate": str(reset_password_successful_rate),
-            "reset_password_error_rate": str(reset_password_error_rate),
+            "reset_password_successful_rate": str(
+                round(reset_password_successful_rate, 1),
+            ),
+            "reset_password_error_rate": str(round(reset_password_error_rate, 1)),
         }
