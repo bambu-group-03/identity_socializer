@@ -7,16 +7,20 @@ build:
     context: .
     dockerfile: deploy/Dockerfile
 deploy:
+  commands:
+    - echo $OKTETO_BUILD_API_IMAGE
+    - envsubst < deploy/kube/app.yml | kubectl apply -f -
   compose:
-  - file: deploy/docker-compose.okteto.yml
+    - file: deploy/docker-compose.okteto.yml
   endpoints:
-  - path: /
-    service: api
-    port: 8000
-  - path: /mongodb
-    service: mongo-db
-    port: 8081
-  - path: /db
-    service: pgadmin
-    port: 5050
+#    - path: /
+#      service: api
+#      port: 8000
+    - path: /mongodb
+      service: mongo-db
+      port: 8081
+    - path: /db
+      service: pgadmin
+      port: 5050
+
 namespace: identity-socializer-luiscusihuaman
