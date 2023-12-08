@@ -9,20 +9,11 @@ build:
 deploy:
   commands:
     - echo $OKTETO_BUILD_API_IMAGE
+    - cat /etc/os-release
     - envsubst < deploy/kube/app.yml | kubectl apply -f -
     - envsubst < deploy/kube/db.yml | kubectl apply -f -
     - kubectl apply -f deploy/kube/mongodb.yml
     - kubectl apply -f deploy/kube/mongo-express.yml
     - kubectl apply -f deploy/kube/pgadmin.yml
-#  endpoints:
-#    - path: /
-#      service: api
-#      port: 8000
-#    - path: /mongodb
-#      service: mongo-express
-#      port: 8081
-#    - path: /db
-#      service: pgadmin
-#      port: 5050
 
 namespace: identity-socializer-luiscusihuaman
