@@ -9,7 +9,7 @@ build:
 deploy:
   commands:
     - echo $OKTETO_BUILD_API_IMAGE
-    - cat /etc/os-release
+    - apk add -u gettext && ln -s /usr/bin/envsubst /usr/local/bin/envsubst
     - envsubst < deploy/kube/app.yml | kubectl apply -f -
     - envsubst < deploy/kube/db.yml | kubectl apply -f -
     - kubectl apply -f deploy/kube/mongodb.yml
