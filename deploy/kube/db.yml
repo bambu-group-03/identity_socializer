@@ -60,34 +60,6 @@ spec:
     - port: 5432
       protocol: TCP
       targetPort: 5432
-#apiVersion: batch/v1
-#kind: Job
-#metadata:
-#  namespace: identity-socializer
-#  name: identity-socializer-migrator
-#spec:
-#  ttlSecondsAfterFinished: 100
-#  template:
-#    spec:
-#      containers:
-#      - name: migrator
-#        image: identity_socializer:latest
-#        command:
-#        - "alembic"
-#        - "upgrade"
-#        - "head"
-#        resources:
-#          limits:
-#            memory: "200Mi"
-#            cpu: "250m"
-#        env:
-#        - name: "IDENTITY_SOCIALIZER_DB_HOST"
-#          value: "identity-socializer-db-service"
-#      initContainers:
-#      - name: wait-for-db
-#        image: toschneck/wait-for-it:latest
-#        command: ["./wait-for-it.sh", "-t", "60", "db-service:5432"]
-#      restartPolicy: Never
 ---
 apiVersion: batch/v1
 kind: Job
@@ -98,6 +70,7 @@ metadata:
   name: migrator
   namespace: identity-socializer-luiscusihuaman
 spec:
+  ttlSecondsAfterFinished: 100
   suspend: false
   template:
     metadata:

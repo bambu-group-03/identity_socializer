@@ -49,6 +49,8 @@ kind: Service
 metadata:
   namespace: identity-socializer-luiscusihuaman
   name: api
+  annotations:
+    dev.okteto.com/auto-ingress: "true"
 spec:
   selector:
     app: api
