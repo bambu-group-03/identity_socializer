@@ -39,16 +39,16 @@ services:
 #      timeout: 3s
 #      retries: 40
 
-  migrator:
-    image: ${OKTETO_BUILD_API_IMAGE}
-    restart: "no"
-    command: alembic upgrade head
-    environment:
-      IDENTITY_SOCIALIZER_DB_HOST: db
-      IDENTITY_SOCIALIZER_DB_PORT: 5432
-      IDENTITY_SOCIALIZER_DB_USER: identity_socializer
-      IDENTITY_SOCIALIZER_DB_PASS: identity_socializer
-      IDENTITY_SOCIALIZER_DB_BASE: identity_socializer
+#  migrator:
+#    image: ${OKTETO_BUILD_API_IMAGE}
+#    restart: "no"
+#    command: alembic upgrade head
+#    environment:
+#      IDENTITY_SOCIALIZER_DB_HOST: db
+#      IDENTITY_SOCIALIZER_DB_PORT: 5432
+#      IDENTITY_SOCIALIZER_DB_USER: identity_socializer
+#      IDENTITY_SOCIALIZER_DB_PASS: identity_socializer
+#      IDENTITY_SOCIALIZER_DB_BASE: identity_socializer
 #    depends_on:
 #      db:
 #        condition: service_healthy

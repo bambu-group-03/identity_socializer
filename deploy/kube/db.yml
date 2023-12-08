@@ -60,7 +60,6 @@ spec:
     - port: 5432
       protocol: TCP
       targetPort: 5432
----
 #apiVersion: batch/v1
 #kind: Job
 #metadata:
@@ -87,7 +86,43 @@ spec:
 #      initContainers:
 #      - name: wait-for-db
 #        image: toschneck/wait-for-it:latest
-#        command: ["./wait-for-it.sh", "-t", "60", "identity-socializer-db-service:5432"]
+#        command: ["./wait-for-it.sh", "-t", "60", "db-service:5432"]
 #      restartPolicy: Never
-
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  labels:
+    stack.okteto.com/name: identity-socializer
+    stack.okteto.com/service: migrator
+  name: migrator
+  namespace: identity-socializer-luiscusihuaman
+spec:
+  suspend: false
+  template:
+    metadata:
+      labels:
+        batch.kubernetes.io/job-name: migrator
+        job-name: migrator
+    spec:
+      containers:
+        - args:
+            - alembic
+            - upgrade
+            - head
+          env:
+            - name: IDENTITY_SOCIALIZER_DB_BASE
+              value: identity_socializer
+            - name: IDENTITY_SOCIALIZER_DB_HOST
+              value: db
+            - name: IDENTITY_SOCIALIZER_DB_PASS
+              value: identity_socializer
+            - name: IDENTITY_SOCIALIZER_DB_PORT
+              value: "5432"
+            - name: IDENTITY_SOCIALIZER_DB_USER
+              value: identity_socializer
+          image: $OKTETO_BUILD_API_IMAGE
+          imagePullPolicy: IfNotPresent
+          name: migrator
+      restartPolicy: Never
 ---
