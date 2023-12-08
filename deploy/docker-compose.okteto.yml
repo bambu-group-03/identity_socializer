@@ -53,12 +53,12 @@ services:
 #      db:
 #        condition: service_healthy
 
-  mongo-db:
-    image: mongo:latest
-    ports:
-    - "27017:27017"
-    volumes:
-    - identity_socializer-db-mongo-data:/data/db
+#  mongo-db:
+#    image: mongo:latest
+#    ports:
+#    - "27017:27017"
+#    volumes:
+#    - identity_socializer-db-mongo-data:/data/db
 
   mongo-express:
     image: mongo-express
@@ -71,8 +71,8 @@ services:
       ME_CONFIG_BASICAUTH_PASSWORD: "admin"
     ports:
     - "8081:8081"
-    depends_on:
-    - mongo-db
+#    depends_on:
+#    - mongo-db
 
   pgadmin:
     image: dpage/pgadmin4:8.0

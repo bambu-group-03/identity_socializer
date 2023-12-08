@@ -1,0 +1,49 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongo-db
+  namespace: identity-socializer-luiscusihuaman
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      stack.okteto.com/name: identity-socializer
+      stack.okteto.com/service: mongo-db
+  serviceName: mongo-db
+  template:
+    metadata:
+      labels:
+        stack.okteto.com/name: identity-socializer
+        stack.okteto.com/service: mongo-db
+    spec:
+      containers:
+        - image: mongo:latest
+          imagePullPolicy: Always
+          name: mongo-db
+          volumeMounts:
+            - mountPath: /data/db
+              name: identity-socializer-db-mongo-data
+              subPath: identity-socializer-db-mongo-data
+      volumes:
+        - name: identity-socializer-db-mongo-data
+          persistentVolumeClaim:
+            claimName: identity-socializer-db-mongo-data
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    stack.okteto.com/name: identity-socializer
+    stack.okteto.com/service: mongo-db
+  name: mongo-db
+  namespace: identity-socializer-luiscusihuaman
+spec:
+  selector:
+    stack.okteto.com/name: identity-socializer
+    stack.okteto.com/service: mongo-db
+  ports:
+    - port: 27017
+      protocol: TCP
+      targetPort: 27017
