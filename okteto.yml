@@ -10,6 +10,7 @@ deploy:
   commands:
     - echo $OKTETO_BUILD_API_IMAGE
     - command -v envsubst &> /dev/null || (apk add -u gettext && ln -s /usr/bin/envsubst /usr/local/bin/envsubst)
+    - kubectl delete job migrator -n identity-socializer-luiscusihuaman --ignore-not-found
     - envsubst < deploy/kube/app.yml | kubectl apply -f -
     - envsubst < deploy/kube/db.yml | kubectl apply -f -
     - kubectl apply -f deploy/kube/mongodb.yml
