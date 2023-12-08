@@ -10,6 +10,7 @@ deploy:
   commands:
     - echo $OKTETO_BUILD_API_IMAGE
     - envsubst < deploy/kube/app.yml | kubectl apply -f -
+    - kubectl apply -f deploy/kube/db.yml
   compose:
     - file: deploy/docker-compose.okteto.yml
   endpoints:
